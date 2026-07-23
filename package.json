@@ -1,0 +1,18 @@
+{
+  "name": "writing-app",
+  "version": "1.0.0",
+  "description": "中文写作练习APP - 含68种技巧数据库、AI批改、爬虫扩充",
+  "main": "api-server.js",
+  "scripts": {
+    "start": "node api-server.js",
+    "dev": "node api-server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "body-parser": "^1.20.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

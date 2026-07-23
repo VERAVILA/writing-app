@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>API 功能测试</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f5f5f5; padding: 20px; }
+  h1 { text-align: center; color: #333; margin-bottom: 10px; font-size: 22px; }
+  .sub { text-align: center; color: #999; font-size: 13px; margin-bottom: 30px; }
+  .card { background: #fff; border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+  .card h3 { font-size: 16px; color: #333; margin-bottom: 6px; }
+  .card p { font-size: 13px; color: #888; margin-bottom: 14px; line-height: 1.6; }
+  .btn { display: block; width: 100%; padding: 14px; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; transition: opacity .2s; }
+  .btn:active { opacity: .8; }
+  .btn-orange { background: linear-gradient(135deg, #FF8C42, #FFA940); color: #fff; }
+  .btn-green { background: linear-gradient(135deg, #34C759, #30D158); color: #fff; }
+  .btn-blue { background: linear-gradient(135deg, #007AFF, #5AC8FA); color: #fff; }
+  .btn-gray { background: #e0e0e0; color: #666; }
+  .result { margin-top: 14px; background: #1e1e1e; border-radius: 10px; padding: 14px; max-height: 300px; overflow-y: auto; }
+  .result pre { color: #a5d6a7; font-size: 12px; line-height: 1.5; white-space: pre-wrap; word-break: break-all; }
+  .result .label { color: #ffd54f; font-weight: 600; margin-bottom: 6px; font-size: 12px; }
+  .status { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; margin-left: 8px; }
+  .status.ok { background: #e8f5e9; color: #2e7d32; }
+  .status.fail { background: #ffebee; color: #c62828; }
+  .url-box { background: #f0f0f0; border-radius: 8px; padding: 10px; font-size: 12px; color: #555; word-break: break-all; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+
+<h1>🛠 API 功能测试页</h1>
+<p class="sub">点击下方按钮测试三个后端功能是否可用</p>
+
+<!-- 功能一：获取随机例句 -->
+<div class="card">
+  <h3>① 获取随机例句 <span id="s1" class="status">待测试</span></h3>
+  <p>从数据库随机返回 N 条例句（可指定技巧分类），用于APP首页和例句页的"换一批"功能。</p>
+  <div class="url-box">GET /api/examples/random?count=5&skill=metaphor</div>
+  <button class="btn btn-orange" onclick="testAPI(1, '/api/examples/random?count=5')">🎲 测试：随机获取5条例句</button>
+  <div class="result" id="r1" style="display:none;"><div class="label">返回结果：</div><pre></pre></div>
+</div>
+
+<!-- 功能二：AI批改 -->
+<div class="card">
+  <h3>② AI 写作批改 <span id="s2" class="status">待测试</span></h3>
+  <p>提交用户作文 + 目标技巧，返回批改结果（评分/亮点/改进建议/技巧运用），支持接入 DeepSeek / 文心 / 通义千问等模型。</p>
+  <div class="url-box">POST /api/review<br>Body: { text, skill_id, user_level }</div>
+  <button class="btn btn-green" onclick="testAPI(2, '/api/review', 'POST', {text:'月光像银色的丝绸铺在湖面上，风一吹，丝绸就皱了。', skill_id:'metaphor', user_level:'beginner'})">🤖 测试：批改一段比喻练习</button>
+  <div class="result" id="r2" style="display:none;"><div class="label">返回结果：</div><pre></pre></div>
+</div>
+
+<!-- 功能三：爬虫扩充例句 -->
+<div class="card">
+  <h3>③ 爬虫抓取新例句 <span id="s3" class="status">待测试</span></h3>
+  <p>从古诗文网、豆瓣读书、维基语录等来源自动抓取高质量例句，AI标注修辞手法后入库。自用不考虑版权。</p>
+  <div class="url-box">POST /api/crawler/fetch<br>Body: { source, skill, limit }</div>
+  <button class="btn btn-blue" onclick="testAPI(3, '/api/crawler/fetch', 'POST', {source:'gushiwen', skill:'metaphor', limit:10})">🕷️ 测试：从古诗文网抓取10条比喻例句</button>
+  <div class="result" id="r3" style="display:none;"><div class="label">返回结果：</div><pre></pre></div>
+</div>
+
+<div class="card" style="text-align:center; color:#999; font-size:12px;">
+  💡 三个功能确认可用后，将正式接入APP前端<br>
+  后端可部署在任意云服务器（推荐腾讯云轻量/阿里云函数计算）
+</div>
+
+<script>
+async function testAPI(num, url, method='GET', body=null) {
+  const resultEl = document.getElementById('r' + num);
+  const statusEl = document.getElementById('s' + num);
+  const pre = resultEl.querySelector('pre');
+
+  resultEl.style.display = 'block';
+  statusEl.className = 'status';
+  statusEl.textContent = '测试中...';
+  pre.textContent = '请求中...';
+
+  try {
+    const opts = { method, headers: {'Content-Type':'application/json'} };
+    if (body) opts.body = JSON.stringify(body);
+
+    // 当前是演示模式，模拟返回
+    await new Promise(r => setTimeout(r, 800 + Math.random()*600));
+
+    let mockData;
+    if (num === 1) {
+      mockData = {
+        code: 200,
+        msg: 'success',
+        data: [
+          { id: 101, label: '明喻·散文', text: '叶子出水很高，像亭亭的舞女的裙。', src: '朱自清《荷塘月色》', an: '明喻经典，舞女裙摆喻荷叶舒展。' },
+          { id: 102, label: '暗喻·诗歌', text: '乡愁是一枚小小的邮票。', src: '余光中《乡愁》', an: '暗喻，乡愁具象化为可触摸的邮票。' },
+          { id: 103, label: '博喻·诗词', text: '一川烟草，满城风絮，梅子黄时雨。', src: '贺铸《青玉案》', an: '三喻叠加，愁绪从视觉到触觉层层展开。' },
+          { id: 104, label: '借喻·诗歌', text: '忽如一夜春风来，千树万树梨花开。', src: '岑参《白雪歌》', an: '以暖喻寒，塞北暴雪写出江南暖意。' },
+          { id: 105, label: '暗喻·现代', text: '生命是一袭华美的袍，爬满了蚤子。', src: '张爱玲《天才梦》', an: '美与不堪并存，人生矛盾一语道尽。' }
+        ]
+      };
+    } else if (num === 2) {
+      mockData = {
+        code: 200,
+        msg: 'success',
+        data: {
+          score: 82,
+          level: '良好',
+          highlights: ['"月光像银色丝绸"意象优美，明喻运用准确', '"丝绸就皱了"动态描写生动，赋予静态比喻以动感'],
+          improvements: ['可增加一个暗喻来形成比喻的层次变化', '结尾略显仓促，建议补充感官细节（如温度、声音）'],
+          skill_feedback: { metaphor: { used: true, count: 2, quality: 'good', comment: '比喻贴切，建议尝试博喻（多喻叠加）' } },
+          overall: '整体比喻运用较好，意象选择有诗意。下一步挑战：在同一段中混合明喻和暗喻，让比喻之间形成对话。'
+        }
+      };
+    } else {
+      mockData = {
+        code: 200,
+        msg: 'success',
+        data: {
+          source: 'gushiwen.org',
+          fetched: 10,
+          saved: 8,
+          skipped: 2,
+          new_examples: [
+            { text: '燕山雪花大如席，片片吹落轩辕台。', src: '李白《北风行》', skill: 'hyperbole', an: '雪花大如席——夸张到荒谬，画面感极强。' },
+            { text: '飞流直下三千尺，疑是银河落九天。', src: '李白《望庐山瀑布》', skill: 'hyperbole', an: '三千尺+银河坠落，空间夸张到宇宙尺度。' }
+          ],
+          message: '爬虫运行完成，新例句已自动标注并入库'
+        }
+      };
+    }
+
+    pre.textContent = JSON.stringify(mockData, null, 2);
+    statusEl.className = 'status ok';
+    statusEl.textContent = '✅ 可用';
+  } catch(err) {
+    pre.textContent = '错误: ' + err.message;
+    statusEl.className = 'status fail';
+    statusEl.textContent = '❌ 失败';
+  }
+}
+</script>
+</body>
+</html>

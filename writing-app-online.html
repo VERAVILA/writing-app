@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>墨练 · 写作技巧练习</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  :root{
+    --orange:#FF8C42;--orange-light:#FFA940;--orange-pale:#FFF3E6;
+    --green:#34C759;--red:#FF3B30;--blue:#007AFF;
+    --bg:#F5F5F7;--card:#FFFFFF;--text:#1C1C1E;--sub:#8E8E93;
+    --border:#E5E5EA;--shadow:0 2px 16px rgba(0,0,0,.06);
+  }
+  body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;padding-bottom:70px}
+
+  /* 顶部导航 */
+  .topbar{position:sticky;top:0;z-index:100;background:linear-gradient(135deg,#FF8C42,#FFA940);padding:14px 16px 12px;color:#fff;display:flex;align-items:center;justify-content:space-between}
+  .topbar h1{font-size:18px;font-weight:700;letter-spacing:1px}
+  .topbar .sub{font-size:11px;opacity:.8;margin-top:2px}
+  .topbar .icon-btn{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;border:none;color:#fff}
+
+  /* 页面容器 */
+  .page{display:none;padding:12px}
+  .page.active{display:block}
+
+  /* 首页 */
+  .hero{background:linear-gradient(135deg,#FF8C42,#FFC53D);border-radius:20px;padding:24px 20px;color:#fff;margin-bottom:16px;position:relative;overflow:hidden}
+  .hero h2{font-size:22px;margin-bottom:6px}
+  .hero p{font-size:13px;opacity:.9;line-height:1.6}
+  .hero .ring{position:absolute;right:-10px;top:-10px;width:100px;height:100px;border:8px solid rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700}
+  .hero .btn-start{margin-top:14px;background:rgba(255,255,255,.25);border:1px solid rgba(255,255,255,.5);color:#fff;padding:10px 24px;border-radius:25px;font-size:15px;font-weight:600;cursor:pointer;backdrop-filter:blur(4px)}
+  .hero .btn-start:active{opacity:.8}
+
+  /* 推荐技巧卡片 */
+  .section-title{font-size:15px;font-weight:700;margin:18px 4px 10px;display:flex;align-items:center;gap:6px}
+  .section-title .dot{width:4px;height:16px;background:var(--orange);border-radius:2px}
+  .skill-card{background:var(--card);border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:var(--shadow);cursor:pointer;transition:transform .15s}
+  .skill-card:active{transform:scale(.98)}
+  .skill-card .header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+  .skill-card .icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+  .skill-card h3{font-size:16px;font-weight:700}
+  .skill-card .cat{font-size:11px;color:var(--sub);margin-top:2px}
+  .skill-card p{font-size:13px;color:#555;line-height:1.6}
+  .skill-card .arrow{float:right;color:var(--orange);font-size:18px;font-weight:700}
+
+  /* 例句卡片 */
+  .example-card{background:var(--card);border-radius:14px;padding:14px 16px;margin-bottom:10px;box-shadow:var(--shadow);border-left:4px solid var(--orange)}
+  .example-card .label{font-size:11px;color:var(--orange);font-weight:600;margin-bottom:6px}
+  .example-card .text{font-size:15px;line-height:1.8;color:var(--text);margin-bottom:8px;font-family:"Noto Serif CJK SC","SimSun",serif}
+  .example-card .src{font-size:12px;color:var(--sub);margin-bottom:6px}
+  .example-card .an{font-size:12px;color:#666;line-height:1.5;background:#FAFAFA;padding:8px 10px;border-radius:8px;margin-top:6px}
+  .example-card .actions{display:flex;gap:8px;margin-top:8px}
+  .example-card .btn-sm{padding:6px 12px;border-radius:8px;font-size:12px;border:1px solid var(--border);background:#fff;cursor:pointer;color:#555}
+  .example-card .btn-sm:active{opacity:.7}
+  .example-card .btn-sm.active{background:var(--orange-pale);color:var(--orange);border-color:var(--orange)}
+
+  /* 分类标签 */
+  .cat-tabs{display:flex;gap:8px;overflow-x:auto;padding:4px 4px 10px;scrollbar-width:none}
+  .cat-tabs::-webkit-scrollbar{display:none}
+  .cat-tab{padding:8px 16px;border-radius:20px;font-size:13px;white-space:nowrap;cursor:pointer;border:1px solid var(--border);background:#fff;color:#555;flex-shrink:0}
+  .cat-tab.active{background:var(--orange);color:#fff;border-color:var(--orange);font-weight:600}
+
+  /* 练习页 */
+  .practice-box{background:var(--card);border-radius:16px;padding:18px;margin-bottom:12px;box-shadow:var(--shadow)}
+  .practice-box .prompt-tag{display:inline-block;background:var(--orange-pale);color:var(--orange);padding:4px 10px;border-radius:6px;font-size:12px;font-weight:600;margin-bottom:10px}
+  .practice-box h3{font-size:17px;margin-bottom:8px}
+  .practice-box .prompt-text{font-size:14px;color:#444;line-height:1.7;margin-bottom:12px}
+  .practice-box .hint{font-size:12px;color:var(--orange);background:var(--orange-pale);padding:8px 12px;border-radius:8px;margin-bottom:14px;line-height:1.5}
+  textarea{width:100%;min-height:200px;padding:14px;border:1.5px solid var(--border);border-radius:12px;font-size:15px;line-height:1.8;resize:vertical;outline:none;font-family:inherit;transition:border .2s}
+  textarea:focus{border-color:var(--orange)}
+  .char-count{text-align:right;font-size:12px;color:var(--sub);margin-top:6px}
+  .btn-submit{display:block;width:100%;padding:14px;margin-top:14px;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#FF8C42,#FFA940);color:#fff;transition:opacity .2s}
+  .btn-submit:active{opacity:.85}
+  .btn-submit:disabled{opacity:.5}
+
+  /* 批改结果弹窗 */
+  .modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:200;align-items:flex-end;justify-content:center}
+  .modal-overlay.show{display:flex}
+  .modal{background:#fff;border-radius:20px 20px 0 0;width:100%;max-height:85vh;overflow-y:auto;padding:20px 18px 30px;animation:slideUp .3s ease}
+  @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+  .modal .score-circle{width:100px;height:100px;border-radius:50%;margin:0 auto 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:32px;font-weight:800;color:#fff}
+  .modal h3{text-align:center;font-size:18px;margin-bottom:4px}
+  .modal .level{text-align:center;font-size:13px;color:var(--sub);margin-bottom:16px}
+  .result-block{margin-bottom:14px}
+  .result-block .label{font-size:13px;font-weight:700;color:var(--orange);margin-bottom:6px}
+  .result-block ul{list-style:none;padding:0}
+  .result-block li{font-size:13px;color:#444;line-height:1.7;padding:6px 0 6px 16px;position:relative}
+  .result-block li::before{content:"•";position:absolute;left:4px;color:var(--orange)}
+  .btn-close-modal{display:block;width:100%;padding:12px;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;background:#F0F0F3;color:#555;margin-top:10px}
+  .btn-close-modal:active{opacity:.8}
+
+  /* 历史记录 */
+  .history-item{background:var(--card);border-radius:14px;padding:14px 16px;margin-bottom:10px;box-shadow:var(--shadow);cursor:pointer}
+  .history-item .date{font-size:11px;color:var(--sub);margin-bottom:4px}
+  .history-item .skill-tag{display:inline-block;background:var(--orange-pale);color:var(--orange);padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:6px}
+  .history-item .title{font-size:15px;font-weight:600;margin-bottom:6px}
+  .history-item .preview{font-size:13px;color:#666;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .history-item .score-badge{float:right;background:var(--orange);color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600}
+  .filter-tabs{display:flex;gap:8px;margin-bottom:12px}
+  .filter-tab{padding:6px 14px;border-radius:16px;font-size:13px;cursor:pointer;border:1px solid var(--border);background:#fff;color:#555}
+  .filter-tab.active{background:var(--orange);color:#fff;border-color:var(--orange)}
+
+  /* 技巧详情 */
+  .skill-detail{background:var(--card);border-radius:16px;padding:18px;margin-bottom:12px;box-shadow:var(--shadow)}
+  .skill-detail h2{font-size:20px;margin-bottom:4px}
+  .skill-detail .cat-badge{display:inline-block;background:var(--orange-pale);color:var(--orange);padding:3px 10px;border-radius:6px;font-size:12px;font-weight:600;margin-bottom:12px}
+  .skill-detail .desc{font-size:14px;color:#444;line-height:1.8;margin-bottom:14px}
+  .skill-detail .tip-box{background:#FFF9F0;border:1px solid #FFE4C4;border-radius:10px;padding:12px;margin-bottom:14px}
+  .skill-detail .tip-box .label{font-size:12px;font-weight:700;color:var(--orange);margin-bottom:4px}
+  .skill-detail .tip-box p{font-size:13px;color:#555;line-height:1.6}
+  .btn-practice{display:block;width:100%;padding:13px;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#FF8C42,#FFA940);color:#fff;margin-top:14px;text-align:center;text-decoration:none}
+  .btn-practice:active{opacity:.85}
+
+  /* 我的页面 */
+  .profile-header{background:linear-gradient(135deg,#FF8C42,#FFC53D);border-radius:20px;padding:24px 20px;color:#fff;text-align:center;margin-bottom:16px}
+  .profile-header .avatar{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.3);display:inline-flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:10px}
+  .profile-header h2{font-size:18px;margin-bottom:4px}
+  .profile-header p{font-size:12px;opacity:.85}
+  .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+  .stat-card{background:var(--card);border-radius:14px;padding:16px;text-align:center;box-shadow:var(--shadow)}
+  .stat-card .num{font-size:28px;font-weight:800;color:var(--orange)}
+  .stat-card .label{font-size:12px;color:var(--sub);margin-top:4px}
+  .menu-list{background:var(--card);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:12px}
+  .menu-item{display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid #F0F0F3;cursor:pointer;gap:12px}
+  .menu-item:last-child{border-bottom:none}
+  .menu-item .icon{font-size:20px;width:28px;text-align:center}
+  .menu-item .text{flex:1;font-size:14px}
+  .menu-item .arrow{color:#ccc;font-size:16px}
+
+  /* 底部TabBar */
+  .tabbar{position:fixed;bottom:0;left:0;right:0;height:64px;background:#fff;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-around;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
+  .tab-item{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;color:var(--sub);font-size:11px;padding:6px 10px;border-radius:10px;transition:color .2s}
+  .tab-item.active{color:var(--orange)}
+  .tab-item .tab-icon{font-size:22px}
+  .tab-center{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#FF8C42,#FFA940);display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;box-shadow:0 4px 12px rgba(255,140,66,.4);cursor:pointer;margin-top:-16px}
+  .tab-center:active{opacity:.85}
+
+  /* Toast */
+  .toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.8);background:rgba(0,0,0,.75);color:#fff;padding:12px 24px;border-radius:10px;font-size:14px;z-index:999;opacity:0;transition:all .3s;pointer-events:none}
+  .toast.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+
+  /* 空状态 */
+  .empty-state{text-align:center;padding:40px 20px;color:var(--sub)}
+  .empty-state .icon{font-size:48px;margin-bottom:12px}
+  .empty-state p{font-size:14px;line-height:1.6}
+
+  /* 技巧列表 */
+  .skill-list-item{display:flex;align-items:center;padding:14px 16px;background:var(--card);border-radius:14px;margin-bottom:8px;box-shadow:var(--shadow);cursor:pointer;gap:12px}
+  .skill-list-item:active{opacity:.8}
+  .skill-list-item .num{width:28px;height:28px;border-radius:50%;background:var(--orange-pale);color:var(--orange);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+  .skill-list-item .info{flex:1}
+  .skill-list-item .info h4{font-size:15px;font-weight:600}
+  .skill-list-item .info p{font-size:12px;color:var(--sub);margin-top:2px}
+  .skill-list-item .ex-count{font-size:11px;color:var(--orange);background:var(--orange-pale);padding:2px 8px;border-radius:10px}
+</style>
+</head>
+<body>
+
+<!-- 顶部导航 -->
+<div class="topbar">
+  <div>
+    <h1 id="pageTitle">墨练</h1>
+    <div class="sub" id="pageSub">写作技巧练习 · 68种技法</div>
+  </div>
+  <button class="icon-btn" onclick="showToast('已刷新 ✨')">⟳</button>
+</div>
+
+<!-- ==================== 首页 ==================== -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <h2>今日练习</h2>
+    <p>掌握一种技巧，胜过盲目写一万字。<br>每天精练一项，68天蜕变。</p>
+    <div class="ring" id="heroRing">0%</div>
+    <button class="btn-start" onclick="goPage('practice')">开始练习 →</button>
+  </div>
+
+  <div class="section-title"><span class="dot"></span> 今日推荐技巧</div>
+  <div id="homeSkillCard"></div>
+
+  <div class="section-title"><span class="dot"></span> 精选例句</div>
+  <div id="homeExamples"></div>
+
+  <div class="section-title"><span class="dot"></span> 最近练习</div>
+  <div id="homeHistory"></div>
+</div>
+
+<!-- ==================== 技巧库 ==================== -->
+<div class="page" id="page-skills">
+  <div class="cat-tabs" id="skillCatTabs"></div>
+  <div id="skillList"></div>
+</div>
+
+<!-- ==================== 技巧详情 ==================== -->
+<div class="page" id="page-skill-detail">
+  <div id="skillDetailContent"></div>
+</div>
+
+<!-- ==================== 例句库 ==================== -->
+<div class="page" id="page-examples">
+  <div class="cat-tabs" id="exampleCatTabs"></div>
+  <div style="display:flex;gap:8px;margin-bottom:12px">
+    <button class="btn-submit" style="margin:0;padding:10px;font-size:14px" onclick="refreshExamples()">🔀 换一批</button>
+  </div>
+  <div id="examplesList"></div>
+</div>
+
+<!-- ==================== 练习页 ==================== -->
+<div class="page" id="page-practice">
+  <div class="practice-box">
+    <div class="prompt-tag" id="promptTag">比喻 · 场景</div>
+    <h3 id="promptTitle">加载中...</h3>
+    <div class="prompt-text" id="promptText"></div>
+    <div class="hint" id="promptHint"></div>
+    <textarea id="writeArea" placeholder="在这里开始写作吧，没有字数限制...\n\n写完点击提交，AI会帮你批改打分 📝" oninput="updateCharCount()"></textarea>
+    <div class="char-count" id="charCount">0 字</div>
+    <button class="btn-submit" id="submitBtn" onclick="submitPractice()">提交批改</button>
+  </div>
+  <div style="display:flex;gap:8px">
+    <button class="btn-submit" style="margin:0;padding:10px;font-size:14px;background:#F0F0F3;color:#555" onclick="nextPrompt()">⏭ 换一个题目</button>
+  </div>
+</div>
+
+<!-- ==================== 历史记录 ==================== -->
+<div class="page" id="page-history">
+  <div class="filter-tabs">
+    <div class="filter-tab active" onclick="filterHistory('all',this)">全部</div>
+    <div class="filter-tab" onclick="filterHistory('week',this)">本周</div>
+    <div class="filter-tab" onclick="filterHistory('month',this)">本月</div>
+  </div>
+  <div id="historyList"></div>
+</div>
+
+<!-- ==================== 我的 ==================== -->
+<div class="page" id="page-profile">
+  <div class="profile-header">
+    <div class="avatar">✍️</div>
+    <h2>我的写作练习</h2>
+    <p>坚持练习，每天进步一点点</p>
+  </div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="num" id="statTotal">0</div><div class="label">累计练习</div></div>
+    <div class="stat-card"><div class="num" id="statWords">0</div><div class="label">累计字数</div></div>
+    <div class="stat-card"><div class="num" id="statSkills">0</div><div class="label">掌握技巧</div></div>
+    <div class="stat-card"><div class="num" id="statBest">0</div><div class="label">最高分</div></div>
+  </div>
+  <div class="menu-list">
+    <div class="menu-item" onclick="exportData()"><span class="icon">📤</span><span class="text">导出练习数据</span><span class="arrow">›</span></div>
+    <div class="menu-item" onclick="clearData()"><span class="icon">🗑️</span><span class="text">清空所有记录</span><span class="arrow">›</span></div>
+    <div class="menu-item" onclick="showToast('版本 1.0.0')"><span class="icon">ℹ️</span><span class="text">关于</span><span class="arrow">›</span></div>
+  </div>
+</div>
+
+<!-- 批改结果弹窗 -->
+<div class="modal-overlay" id="resultModal">
+  <div class="modal">
+    <div class="score-circle" id="scoreCircle" style="background:linear-gradient(135deg,#FF8C42,#FFC53D)">--</div>
+    <h3 id="resultTitle">批改完成</h3>
+    <div class="level" id="resultLevel"></div>
+    <div class="result-block">
+      <div class="label">✨ 亮点</div>
+      <ul id="resultHighlights"></ul>
+    </div>
+    <div class="result-block">
+      <div class="label">📌 改进建议</div>
+      <ul id="resultImprovements"></ul>
+    </div>
+    <div class="result-block">
+      <div class="label">🎯 技巧运用</div>
+      <ul id="resultSkill"></ul>
+    </div>
+    <div class="result-block">
+      <div class="label">📝 总评</div>
+      <ul><li id="resultOverall"></li></ul>
+    </div>
+    <button class="btn-close-modal" onclick="closeModal()">我知道了</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- 底部TabBar -->
+<div class="tabbar">
+  <div class="tab-item active" data-page="home" onclick="goPage('home',this)">
+    <span class="tab-icon">🏠</span><span>首页</span>
+  </div>
+  <div class="tab-item" data-page="skills" onclick="goPage('skills',this)">
+    <span class="tab-icon">📚</span><span>技巧</span>
+  </div>
+  <div class="tab-center" onclick="goPage('practice')">✏️</div>
+  <div class="tab-item" data-page="examples" onclick="goPage('examples',this)">
+    <span class="tab-icon">💬</span><span>例句</span>
+  </div>
+  <div class="tab-item" data-page="history" onclick="goPage('history',this)">
+    <span class="tab-icon">📋</span><span>历史</span>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   写作技巧数据库（68种，全部内置）
+   ============================================================ */
+const SKILLS = [
+  // 修辞手法（1-24）
+  {id:'metaphor',name:'比喻',cat:'修辞',catNo:1,sub:'让抽象变具体，让陌生变熟悉',desc:'比喻是用本质不同但有相似点的事物来描绘另一事物。分为明喻（如/像）、暗喻（是/成为）、借喻（不出现本体）和博喻（多喻叠加）。',tip:'先确定要表达的"感受"，再找生活中与之有相似质感的具体事物。避免"时间像流水"这种陈词滥调。',practice:'写一段关于"焦虑"或"期待"的感受，用比喻让读者"看到"这种情绪。至少用1个明喻或暗喻。',examples:[{label:'明喻·散文',text:'叶子出水很高，像亭亭的舞女的裙。',src:'朱自清《荷塘月色》',an:'"像"连接荷叶与舞女裙，"亭亭"让静态荷叶有了动态美感。'},{label:'暗喻·诗歌',text:'乡愁是一枚小小的邮票，我在这头，母亲在那头。',src:'余光中《乡愁》',an:'乡愁化为可触摸的"邮票"，四段层层推进。'},{label:'博喻·诗词',text:'试问闲愁都几许？一川烟草，满城风絮，梅子黄时雨。',src:'贺铸《青玉案》',an:'三个喻体叠加形容同一种情绪，从视觉到触觉。'},{label:'借喻·诗歌',text:'忽如一夜春风来，千树万树梨花开。',src:'岑参《白雪歌送武判官归京》',an:'以暖喻寒的巅峰——用梨花喻塞北暴雪。'},{label:'暗喻·现代',text:'生命是一袭华美的袍，爬满了蚤子。',src:'张爱玲《天才梦》',an:'将人生喻为华袍与蚤子的矛盾体。'},{label:'明喻·古典',text:'不知细叶谁裁出，二月春风似剪刀。',src:'贺知章《咏柳》',an:'无形春风化为有形剪刀，童趣与巧思并存。'}]},
+  {id:'personification',name:'拟人',cat:'修辞',catNo:2,sub:'给万物赋予灵魂，让世界活起来',desc:'拟人将事物人格化，赋予它们人的动作、情感和意志。分为动态拟人、情感拟人和对话拟人。',tip:'选一个你每天接触但从不注意的物件，给它一种"情绪"，用三个动作让它活过来。',practice:'描写一个"清晨的房间"（无人状态），让房间里的物件"醒来"并各忙各的。至少3个拟人句。',examples:[{label:'拟人·散文',text:'桃树、杏树、梨树，你不让我，我不让你，都开满了花赶趟儿。',src:'朱自清《春》',an:'花树被赋予人的竞争心理，"赶趟儿"更添市井烟火气。'},{label:'拟人·诗歌',text:'感时花溅泪，恨别鸟惊心。',src:'杜甫《春望》',an:'花在流泪，鸟在惊心——诗人的情感投射到万物之上。'},{label:'拟人·歌词',text:'风在唱着歌，唤醒了沉睡的田野。',src:'李健《风吹麦浪》',an:'风会唱歌，田野会沉睡，自然有了生命节律。'},{label:'拟人·小说',text:'夜仿佛纸浸了油，变成半透明体，它给太阳拥抱住了。',src:'钱钟书《围城》',an:'夜被拟人化为可"拥抱"的对象。'},{label:'拟人·散文',text:'雨愈下愈老成，水点贯串作丝。',src:'钱钟书《围城》',an:'"老成"用在雨上，雨有了人的性格与年龄感。'},{label:'拟人·诗歌',text:'羌笛何须怨杨柳，春风不度玉门关。',src:'王之涣《凉州词》',an:'羌笛"怨"，春风"不度"，物象有了人的情绪。'}]},
+  {id:'parallelism',name:'排比',cat:'修辞',catNo:3,sub:'三连击的力量，让文字有节奏有气势',desc:'排比用三个及以上结构相似、语气一致的短语或句子并列，形成节奏感和递进气势。',tip:'排比的关键是"渐强"——每句都比前一句更进一步。避免平铺，要让读者读到第三句时有"被推了一把"的感觉。',practice:'以"母亲的手"或"父亲的话"为主题，用排比写三段，每段从不同感官或场景切入。',examples:[{label:'排比·散文',text:'春天像刚落地的娃娃，从头到脚都是新的；像小姑娘，花枝招展的；像健壮的青年，领着我们上前去。',src:'朱自清《春》',an:'以人的三个阶段作喻体描写春天，层递推进。'},{label:'排比·演讲',text:'让自由之声从新罕布什尔州的峰巅响起来！从纽约州的崇山峻岭响起来！从宾夕法尼亚州阿勒格尼山响起来！',src:'马丁·路德·金《我有一个梦想》',an:'三个"让自由之声从……响起来"层层推进。'},{label:'排比·散文',text:'燕子去了有再来的时候；杨柳枯了有再青的时候；桃花谢了有再开的时候。',src:'朱自清《匆匆》',an:'三个"……了，有再……的时候"结构，为后文蓄势。'},{label:'排比·诗歌',text:'少年强则国强，少年智则国智，少年富则国富，少年独立则国独立。',src:'梁启超《少年中国说》',an:'四个"少年……则国……"层层叠加，气势磅礴。'}]},
+  {id:'hyperbole',name:'夸张',cat:'修辞',catNo:4,sub:'放大或缩小，让表达产生冲击力',desc:'夸张是故意超出客观事实地描写事物，以突出特征、强化情感。分为扩大夸张、缩小夸张和超前夸张。',tip:'夸张要"离谱但合理"——读者明知不可能，却觉得"就是这个感觉"。',practice:'描写一种强烈情绪（如惊喜、恐惧、愤怒），用夸张手法让读者感受到"超过现实"的冲击力。',examples:[{label:'夸张·诗歌',text:'飞流直下三千尺，疑是银河落九天。',src:'李白《望庐山瀑布》',an:'三千尺瀑布+银河坠落，气势压倒一切。'},{label:'夸张·诗歌',text:'白发三千丈，缘愁似个长。',src:'李白《秋浦歌》',an:'白发三千丈——愁的长度被具象化为可测量的物理空间。'},{label:'夸张·散文',text:'这房间小得连叹气都转不开身。',src:'钱钟书风格',an:'把"小"夸张到荒谬程度，幽默感来自违反常识的想象。'},{label:'夸张·诗歌',text:'万里悲秋常作客，百年多病独登台。',src:'杜甫《登高》',an:'"万里"空间夸张+"百年"时间夸张，个人悲苦被放大到天地尺度。'}]},
+  {id:'contrast',name:'对比',cat:'修辞',catNo:5,sub:'以暗衬明，让主题自己跳出来',desc:'对比将相反或相对的事物放在一起，以突出一方。分为横向对比（A vs B）和纵向对比（过去 vs 现在）。',tip:'写两个画面：一个热闹的，一个安静的。放在一起不加评论，让读者自己感受反差。',practice:'以"一张旧照片"为线索，用对比手法写"过去"和"现在"两段画面。',examples:[{label:'反衬·诗歌',text:'蝉噪林逾静，鸟鸣山更幽。',src:'王籍《入若耶溪》',an:'以有声衬无声，以动衬静。反向强化的巅峰。'},{label:'对比·诗歌',text:'从前车马很慢，书信很远，一生只够爱一个人。',src:'木心《从前慢》',an:'用"慢"对比现代"快"，温柔的怀念让人感受变迁的代价。'},{label:'对比·诗歌',text:'去年今日此门中，人面桃花相映红。人面不知何处去，桃花依旧笑春风。',src:'崔护《题都城南庄》',an:'"人面"与"桃花"对比，去年与今年对比。'},{label:'对比·歌词',text:'得到的越看越轻，来弥补未得到的贪心。',src:'陈奕迅《红玫瑰》',an:'"得到"与"未得到"对比，一轻一重道尽人性矛盾。'}]},
+  {id:'antithesis',name:'对偶',cat:'修辞',catNo:6,sub:'字数相等、结构相同，两两成对的音韵美',desc:'对偶是用字数相等、结构相同、意义对称的词组或句子来表达两个相对或相近意思。分为正对和反对。',tip:'对偶讲究"词性相对、平仄相拗"。现代写作不必严格押韵，但保持"结构对称"就能产生节奏美感。',practice:'写一副关于"读书"或"故乡"的对联式短句，上下两句字数相同、结构相对。',examples:[{label:'对偶·律诗',text:'两个黄鹂鸣翠柳，一行白鹭上青天。',src:'杜甫《绝句》',an:'数量对数量，颜色对颜色，动物对动物，空间从近到远。'},{label:'对偶·律诗',text:'无边落木萧萧下，不尽长江滚滚来。',src:'杜甫《登高》',an:'空间对时间，落木对长江，萧萧对滚滚，千古对偶第一联。'},{label:'对偶·散文',text:'横眉冷对千夫指，俯首甘为孺子牛。',src:'鲁迅《自嘲》',an:'"横眉"对"俯首"，态度截然相反，人格的两极统一。'},{label:'对偶·古文',text:'落霞与孤鹜齐飞，秋水共长天一色。',src:'王勃《滕王阁序》',an:'动态对静态，落霞对秋水，色彩与空间浑然一体。'}]},
+  {id:'repetition',name:'反复',cat:'修辞',catNo:7,sub:'重复的力量，让情感层层叠加',desc:'反复是有意重复同一词语、句子或段落，以强调某种情感或观点。分为连续反复和间隔反复。',tip:'反复不是啰嗦。每次重复都要有"递进"——要么情感更深，要么内容更广，要么语气更强。',practice:'以"妈妈总是说"或"那时候"为开头，反复三次，每次展开不同的记忆片段。',examples:[{label:'反复·诗歌',text:'寻寻觅觅，冷冷清清，凄凄惨惨戚戚。',src:'李清照《声声慢》',an:'七组叠词连续反复，从动作到心境层层下沉。'},{label:'反复·演讲',text:'我有一个梦想……我有一个梦想……我有一个梦想……',src:'马丁·路德·金《我有一个梦想》',an:'同一句反复出现八次，形成庄严的复调。'},{label:'反复·诗歌',text:'再别康桥，轻轻的我走了，正如我轻轻的来。',src:'徐志摩《再别康桥》',an:'"轻轻"在开头和结尾反复出现，形成回环的告别节奏。'}]},
+  {id:'rhetorical_q',name:'反问',cat:'修辞',catNo:8,sub:'答案在问中，比陈述更有力',desc:'反问是用疑问的形式表达确定的意思，答案隐含在问句中。分为肯定式反问和否定式反问。',tip:'反问适合用在观点输出和情绪高潮处。用太多会显得咄咄逼人，一篇文章1-3次为宜。',practice:'就一个你深信不疑的观点（如"努力值得""善良不应被嘲笑"），用反问句开头写一段话。',examples:[{label:'反问·散文',text:'难道中国人民不想过好日子吗？',src:'毛泽东《论人民民主专政》',an:'否定式反问，答案"当然想"隐含其中。'},{label:'反问·诗歌',text:'同是天涯沦落人，相逢何必曾相识？',src:'白居易《琵琶行》',an:'问号结尾但答案是"不必曾相识"——同病相怜超越一切。'},{label:'反问·演讲',text:'难道我们甘愿做奴隶吗？不！',src:'闻一多《最后一次讲演》',an:'反问+否定回答，斩钉截铁，不容置疑。'}]},
+  {id:'shenwen',name:'设问',cat:'修辞',catNo:9,sub:'自问自答，牵引读者注意力',desc:'设问是先提出问题，再自己回答。目的是引起读者注意、激发思考，然后自然引出下文观点。',tip:'设问的关键是"答"要有力。"问"是钩子，"答"才是真正的观点。答案要简洁、有画面感。',practice:'以"什么是故乡？"或"什么是勇气？"为设问开头，自问自答写一段200字左右的短文。',examples:[{label:'设问·散文',text:'什么是路？就是从没有路的地方践踏出来的，从只有荆棘的地方开辟出来的。',src:'鲁迅《生命的路》',an:'先问后答，用"践踏"和"开辟"两个动词定义"路"。'},{label:'设问·演讲',text:'中国人失掉自信力了吗？没有。我们从古以来就有埋头苦干的人。',src:'鲁迅《中国人失掉自信力了吗》',an:'大哉一问，然后以历史事实作答，驳论经典结构。'}]},
+  {id:'metonymy',name:'借代',cat:'修辞',catNo:10,sub:'不直说本体，用相关事物代替',desc:'借代是不直接说出要说的事物，而用与其密切相关的事物来代替。分为特征代本体、部分代整体和具体代抽象。',tip:'借代要求"代体"与"本体"有不可分离的关系。读者一看就能联想到本体，不会产生歧义。',practice:'写一段场景描写，用至少两个借代（如用"白大褂"代医生、"讲台"代教师）。',examples:[{label:'借代·诗歌',text:'朱门酒肉臭，路有冻死骨。',src:'杜甫《自京赴奉先县咏怀》',an:'"朱门"代富贵人家，颜色代阶级，四字写尽对立。'},{label:'借代·诗歌',text:'孤帆远影碧空尽，唯见长江天际流。',src:'李白《黄鹤楼送孟浩然之广陵》',an:'"帆"代船，"孤帆"代孟浩然所乘之船。'},{label:'借代·现代',text:'成千上万的"红领巾"涌向广场。',src:'新闻报道',an:'红领巾代少先队员，特征代身份，形象鲜明。'}]},
+  {id:'pun',name:'双关',cat:'修辞',catNo:11,sub:'一句话两层意思，言在此而意在彼',desc:'双关是利用词语的同音或同义关系，使一句话同时关涉两种意思。分为谐音双关和语义双关。',tip:'双关的妙处在于"读者自己领悟"。不要解释你的双关，让发现变成读者的惊喜。',practice:'写一段包含双关的文字（谐音或语义均可），让一句话同时承载两层意思。',examples:[{label:'双关·诗歌',text:'东边日出西边雨，道是无晴却有晴。',src:'刘禹锡《竹枝词》',an:'"晴"谐音"情"——既说天气阴晴，又说感情真假。'},{label:'双关·诗歌',text:'春蚕到死丝方尽，蜡炬成灰泪始干。',src:'李商隐《无题》',an:'"丝"谐音"思"，蚕丝=相思，烛泪=眼泪，两层意思同时流淌。'},{label:'双关·广告',text:'一"键"钟情。',src:'某品牌键盘广告',an:'谐音"一见钟情"，"键"既指键盘又指"一见"。'}]},
+  {id:'synaesthesia',name:'通感',cat:'修辞',catNo:12,sub:'打通五官，用一种感官写另一种感官',desc:'通感是把不同感官的感受互相沟通、交错的修辞方式。如"听见颜色""看见声音""尝到形状"。',tip:'通感的核心是"跨感官映射"。多问自己：这个声音"看起来"像什么？这个味道"摸起来"怎样？',practice:'描写一种你喜欢的音乐，用通感把它"翻译"成颜色和味道。',examples:[{label:'通感·散文',text:'微风过处，送来缕缕清香，仿佛远处高楼上渺茫的歌声似的。',src:'朱自清《荷塘月色》',an:'嗅觉转化为听觉，气味有了旋律和距离感。'},{label:'通感·散文',text:'光与影有着和谐的旋律，如梵婀玲上奏着的名曲。',src:'朱自清《荷塘月色》',an:'视觉转化为听觉，月光的明暗有了乐谱。'},{label:'通感·诗歌',text:'嘈嘈切切错杂弹，大珠小珠落玉盘。',src:'白居易《琵琶行》',an:'听觉转化为视觉，声音有了形状和光泽。'}]},
+  {id:'symbolism',name:'象征',cat:'修辞',catNo:13,sub:'用具体事物承载抽象意义',desc:'象征是通过特定的具体形象来表现与之相似或相近的概念、思想和感情。分为公共象征和个人象征。',tip:'象征贵在"含蓄"。不要让象征物直接说出它所代表的意义，留白让读者自己解码。',practice:'选一个自然物（如石头、河流、星星），赋予它一种人格品质，用象征手法写一段200字短文。',examples:[{label:'象征·散文',text:'白杨树伟岸、正直、朴质、严肃，也不缺乏温和，它是树中的伟丈夫。',src:'茅盾《白杨礼赞》',an:'白杨树象征北方农民的坚韧品格。'},{label:'象征·诗歌',text:'黑夜给了我黑色的眼睛，我却用它寻找光明。',src:'顾城《一代人》',an:'"黑色眼睛"象征被禁锢的视角，"光明"象征自由与希望。'},{label:'象征·小说',text:'海燕在乌云和大海之间，像黑色的闪电，高傲地飞翔。',src:'高尔基《海燕》',an:'海燕象征革命者，"乌云"象征反动势力。'}]},
+  {id:'allusion',name:'用典',cat:'修辞',catNo:14,sub:'借古人酒杯，浇自己块垒',desc:'用典是引用古代故事、传说或前人诗文语句来表达自己的思想感情。分为事典和语典。',tip:'用典要"隐而不晦"。读者不需要知道典故出处也能理解大意，但知道出处会有更深的共鸣。',practice:'用一个你熟悉的历史典故，融入一段现代生活场景的描写中。',examples:[{label:'用典·诗歌',text:'怀旧空吟闻笛赋，到乡翻似烂柯人。',src:'刘禹锡《酬乐天扬州初逢席上见赠》',an:'用向秀《思旧赋》和王质烂柯两个典故，写尽物是人非。'},{label:'用典·诗歌',text:'庄生晓梦迷蝴蝶，望帝春心托杜鹃。',src:'李商隐《锦瑟》',an:'庄周梦蝶+望帝化鹃，两个典故叠加，虚实难辨。'},{label:'用典·散文',text:'廉颇老矣，尚能饭否？',src:'辛弃疾《永遇乐》',an:'用廉颇典故，以古人之问问自己：我还有用吗？'}]},
+  {id:'intertextuality',name:'互文',cat:'修辞',catNo:15,sub:'前后呼应，文意互相补充',desc:'互文是上下文中的词语互相配合、互相补充，合在一起才能表达完整意思。',tip:'互文的妙处在于"文约意丰"。读古诗文时要学会"合起来理解"，不要逐句孤立翻译。',practice:'用互文手法写一句话，前后两个分句互相补充，表达一个完整画面。',examples:[{label:'互文·乐府',text:'当窗理云鬓，对镜帖花黄。',src:'《木兰诗》',an:'不是分别对窗和镜，而是"对着窗户镜子一起打扮"。'},{label:'互文·诗歌',text:'秦时明月汉时关，万里长征人未还。',src:'王昌龄《出塞》',an:'"秦汉时的明月和关隘"——不是秦的月汉的关。'},{label:'互文·诗歌',text:'主人下马客在船，举酒欲饮无管弦。',src:'白居易《琵琶行》',an:'主人和客人都下马上船，不是主人下马、客人留船上。'}]},
+  {id:'anadiplosis',name:'顶真',cat:'修辞',catNo:16,sub:'上句结尾作下句开头，环环相扣',desc:'顶真是用上一句结尾的词语作为下一句开头的词语，使句子首尾蝉联、环环相扣。',tip:'顶真适合写"过程"和"链条"。思考一个连续动作或逻辑推理，用顶真让每一步自然衔接。',practice:'用顶真手法写一段关于"学习"或"成长"的递进式短文（至少4个环节）。',examples:[{label:'顶真·诗歌',text:'归来见天子，天子坐明堂。',src:'《木兰诗》',an:'"天子"首尾相连，叙述节奏紧凑。'},{label:'顶真·民歌',text:'大肚能容，容天下难容之事；开口便笑，笑世间可笑之人。',src:'佛寺对联',an:'容→容，笑→笑，顶真与对偶结合。'},{label:'顶真·古文',text:'知止而后有定，定而后能静，静而后能安，安而后能虑，虑而后能得。',src:'《大学》',an:'止→定→静→安→虑→得，六步顶真，环环相扣。'}]},
+  {id:'chiasmus',name:'回环',cat:'修辞',catNo:17,sub:'AB→BA，正反都通的语言游戏',desc:'回环是让词语或句子以相反的顺序重复出现，形成"AB→BA"的结构。常用于表达哲理和辩证关系。',tip:'回环的妙处在于"怎么读都对"。尝试写一句话，正着读和反着读都成立，但意思有微妙变化。',practice:'用回环手法写一组关于"得到与失去"或"过去与未来"的辩证短句。',examples:[{label:'回环·古文',text:'信言不美，美言不信。',src:'《老子》',an:'"信言"与"美言"位置互换，道与美的辩证。'},{label:'回环·现代',text:'人多的时候我想静静，一个人时我又想人多的热闹。',src:'当代随笔',an:'人多→静，一个人→热闹，回环中道出矛盾心理。'},{label:'回环·歌词',text:'你爱我，我爱他，他爱她，她爱我。',src:'流行歌词',an:'爱的关系在回环中形成闭环。'}]},
+  {id:'zeugma',name:'拈连',cat:'修辞',catNo:18,sub:'顺势牵连，一词两用',desc:'拈连是把适用于甲事物的词语顺势连用到乙事物上，产生一种"偷换概念"的巧妙效果。',tip:'拈连的核心是"顺势"。第一个用法要自然，第二个用法要让人眼前一亮。',practice:'写一段话，用一个动词先描述具体动作，再顺势描述抽象情感。',examples:[{label:'拈连·诗歌',text:'你走了，带着我的思念一起走了。',src:'现代诗',an:'"走"本用于人，顺势用于"思念"，让抽象情感也有了脚步。'},{label:'拈连·散文',text:'他放下了手中的烟，也放下了心中的重担。',src:'现代小说',an:'"放下"先用于具体（烟），再顺势用于抽象（重担）。'}]},
+  {id:'transferred_epithet',name:'移就',cat:'修辞',catNo:19,sub:'把A的修饰语移给B，产生奇异的诗意',desc:'移就是将两个本不相属的事物中，把修饰甲事物的词语移来修饰乙事物。打破常规搭配，产生新鲜感。',tip:'移就的关键是"错位感"。把形容人的词移给物，或把形容物的词移给人，错位中产生诗意。',practice:'用移就手法写一段关于"失眠的夜"的描写，把情绪形容词移给房间里的物件。',examples:[{label:'移就·诗歌',text:'他带着一脸的困惑走进那间充满疑问的房间。',src:'现代诗',an:'"疑问"本属于人，移给"房间"，空间也被染上情绪。'},{label:'移就·散文',text:'那是一个快乐的下午，连影子都是欢快的。',src:'现代散文',an:'"欢快"本属于人，移给"影子"，情绪外溢。'},{label:'移就·小说',text:'他点燃一支愁闷的烟。',src:'现代小说',an:'"愁闷"本属于人，移给"烟"，抽烟承载了全部情绪。'}]},
+  {id:'climax_rhetoric',name:'层递',cat:'修辞',catNo:20,sub:'层层推进，一步比一步更有力',desc:'层递是把三个或以上事物按程度深浅、范围大小或数量多少排列，形成递进关系。',tip:'层递与排比的区别：排比重"并列"，层递重"递进"。写层递时要确保每一步都比前一步"更进一层"。',practice:'以"时间"为主题，写三层递进（如：分钟→小时→一生），每一层情感比前一层更深。',examples:[{label:'层递·古文',text:'故不积跬步，无以至千里；不积小流，无以成江海。',src:'荀子《劝学》',an:'跬步→千里，小流→江海，数量从小到大。'},{label:'层递·诗歌',text:'少年听雨歌楼上，红烛昏罗帐。壮年听雨客舟中，江阔云低断雁叫西风。而今听雨僧庐下，鬓已星星也。',src:'蒋捷《虞美人·听雨》',an:'少年→壮年→老年，三个阶段层层递进，一生听雨即是整个人生。'},{label:'层递·散文',text:'有的人活着，他已经死了；有的人死了，他还活着。',src:'臧克家《有的人》',an:'活着/死了的对调本身就是层递，后一句比前一句更震撼。'}]},
+  {id:'comparison',name:'比拟',cat:'修辞',catNo:21,sub:'把人当物写，或把物当人写',desc:'比拟是把甲事物当作乙事物来写，分为拟人（把物当人）和拟物（把人当物）。与比喻不同，比拟直接"等同"。',tip:'比拟比比喻更"彻底"——比喻说"A像B"，比拟说"A就是B"。大胆地把事物"变成"另一种东西来写。',practice:'用拟物手法写一段文字（把你熟悉的一个人当作某种动物或植物来写）。',examples:[{label:'拟物·诗歌',text:'我是一颗小小的石头，深深地埋在泥土之中。',src:'儿歌《雨花石》',an:'把"我"直接当作石头来写，不是比喻，而是身份等同。'},{label:'拟人·散文',text:'那棵老树弯着腰，好像在跟每一个路过的人打招呼。',src:'现代散文',an:'老树直接"弯着腰""打招呼"，不需要"像人一样"的桥梁。'},{label:'拟人·小说',text:'那辆旧自行车吱吱呀呀地抱怨着爬上了坡。',src:'现代小说',an:'自行车"抱怨"——直接赋予人的情绪。'}]},
+  {id:'onomatopoeia',name:'摹状',cat:'修辞',catNo:22,sub:'摹写声音、颜色和形状，让文字"看得见听得着"',desc:'摹状是用语言直接摹写事物的声音、颜色、形状等外在特征。包括摹声、摹色和摹形。',tip:'摹状词是文字的"感官快捷键"。一个精准的拟声词比三句话的描写更有现场感。',practice:'描写"厨房做饭"或"雨天的街道"，至少使用3个摹状词（摹声/摹色/摹形各一）。',examples:[{label:'摹声·散文',text:'筷子头一扎下去，吱——红油就冒出来了。',src:'汪曾祺《端午的鸭蛋》',an:'拟声词"吱"激活了听觉，让味觉有了声音维度。'},{label:'摹色·诗歌',text:'日出江花红胜火，春来江水绿如蓝。',src:'白居易《忆江南》',an:'红胜火+绿如蓝，色彩饱和到溢出画面。'},{label:'摹形·散文',text:'那孩子圆滚滚的，像个发酵过头的小面团。',src:'现代散文',an:'"圆滚滚"摹形状，再加比喻，画面跃然纸上。'}]},
+  {id:'apostrophe',name:'呼告',cat:'修辞',catNo:23,sub:'直接呼唤文中人物或事物，打破"第四面墙"',desc:'呼告是在说话或写作中，突然撇开读者或听众，直接对不在场的人、物或抽象概念发出呼唤。',tip:'呼告适合情感高潮处。直接"叫出名字"，比第三人称叙述多十倍的力量。',practice:'以"给十年后的自己写一封信"为题，用呼告手法（第二人称"你"）来写。',examples:[{label:'呼告·诗歌',text:'大堰河，我的保姆，你的被雪压着的草盖的坟墓……',src:'艾青《大堰河——我的保姆》',an:'直接呼唤已故的保姆，情感如江河决堤。'},{label:'呼告·诗歌',text:'啊，母亲！您苍白的指尖理着我的双鬓。',src:'舒婷《呵，母亲》',an:'直接呼唤母亲，第二人称拉近距离。'},{label:'呼告·散文',text:'时间啊时间，你为什么总是这样匆匆？',src:'现代散文',an:'直接向"时间"发问，抽象概念被拉到面前对质。'}]},
+  {id:'euphemism',name:'婉曲',cat:'修辞',catNo:24,sub:'绕着弯子说，比直说更有力量',desc:'婉曲是不直接说出本意，而是用委婉曲折的方式表达。分为婉言（用温和词代替刺耳词）和曲语（用暗示代替直陈）。',tip:'婉曲的核心是"不说破"。用画面、用暗示、用仪式感来替代直白的陈述，让读者自己领会。',practice:'用婉曲手法写一段关于"离别"的文字，不直接说"再见"或"离开"。',examples:[{label:'婉曲·诗歌',text:'家祭无忘告乃翁。',src:'陆游《示儿》',an:'不说"我死后"，而说"家祭时"，用仪式代替死亡。'},{label:'婉曲·散文',text:'他去了另一个世界。',src:'现代语体',an:'"去另一个世界"委婉代替"死"。'},{label:'婉曲·诗歌',text:'蓬山此去无多路，青鸟殷勤为探看。',src:'李商隐《无题》',an:'不说"再见不到"，而说"蓬山路不远"，用神话委婉表达距离。'}]},
+
+  // 描写技法（25-36）
+  {id:'sensory',name:'感官描写',cat:'描写',catNo:25,sub:'五感联动，让读者身临其境',desc:'感官描写是同时调动视觉、听觉、嗅觉、味觉、触觉来描写事物。人类80%靠视觉，但记忆最深的是气味和触感。',tip:'写一个你熟悉的地方，至少用到三种感官。先列清单：看到什么？听到什么？闻到什么？摸到什么？',practice:'描写"外婆的厨房"或"雨后的操场"，至少调动三种感官。',examples:[{label:'感官·小说',text:'空气中弥漫着栀子花的香气，黏稠得像化开的奶油，阳光照在皮肤上，有一种轻微的、持续的刺痛。',src:'村上春树《挪威的森林》',an:'嗅觉→触觉→温度，感官叠加营造"此刻感"。'},{label:'味觉·散文',text:'西瓜以绳络悬于井中，下午剖食，一刀下去，咔嚓有声，凉气四溢，连眼睛都是凉的。',src:'汪曾祺《人间草木》',an:'听觉+触觉+通感（眼睛是凉的），一个西瓜写活了。'},{label:'嗅觉·小说',text:'从路两边高粱地里飘来薄荷的幽淡气息和高粱苦涩微甘的气味。',src:'莫言《红高粱家族》',an:'"幽淡"形容薄荷，"苦涩微甘"形容高粱，嗅觉精准如仪器。'}]},
+  {id:'detail_desc',name:'细节描写',cat:'描写',catNo:26,sub:'以小见大，一个动作胜过千言万语',desc:'细节描写捕捉微小的动作、表情、物件来传递深层情感。它是"冰山理论"的实践——水面下的八分之七，靠一个细节就能让人感知到。',tip:'选一个你爱的人，写一个关于TA的"微习惯"或"小物件"，不超过100字，但要让读者感受到情感。',practice:'描写"爷爷的手"或"母亲的某个习惯性动作"，不写"爱"字，但让读者感受到爱。',examples:[{label:'细节·小说',text:'他咬着牙，把拳头攥得咯咯响，但最后只是松开手，拍了拍对方的肩膀。',src:'路遥《平凡的世界》',an:'"攥拳头"到"拍肩膀"的转变，一个细节写出隐忍与善良。'},{label:'细节·散文',text:'父亲的背影混入来来往往的人里，再找不着了。',src:'朱自清《背影》',an:'全篇围绕"背影消失"展开，中国式父爱的经典表达。'},{label:'细节·散文',text:'她视力不好，端着眼镜像在寻找海上的一条船。',src:'史铁生《我与地坛》',an:'"端着眼镜找船"——母爱被具象为一个动作。'}]},
+  {id:'action_desc',name:'动作描写',cat:'描写',catNo:27,sub:'精准刻画动作，让人物自己"演"出来',desc:'动作描写是通过精准刻画人物的肢体动作来展现性格、推动情节。好的动作描写拒绝笼统（"他走了"），追求具体。',tip:'动词是动作描写的灵魂。每写一个动作，问自己：有没有更精准的动词？"走"→"蹭"→"挪"→"踱"，各有各的质感。',practice:'描写一个人"等公交"的场景，只用动作描写（不写心理和对话），让读者感受到TA的情绪。',examples:[{label:'动作·小说',text:'孔乙己便排出九文大钱。',src:'鲁迅《孔乙己》',an:'"排"字精妙——不是掏不是扔，是一个个数出来，穷困中的最后一点体面。'},{label:'动作·小说',text:'她弯腰，把鞋带重新系了一遍，其实她只是想低下头，不让人看见眼泪。',src:'张爱玲《半生缘》',an:'动作是借口，眼泪才是真相。'}]},
+  {id:'expression_desc',name:'神态描写',cat:'描写',catNo:28,sub:'捕捉面部微表情，揭示内心世界',desc:'神态描写是刻画人物面部表情的变化，以反映其内心活动。眼睛、嘴角、眉头的细微变化，往往比语言更能透露真相。',tip:'神态描写的关键是"捕捉瞬间"。人脸上每秒都在变化，找到那个"决定性的瞬间"定格它。',practice:'描写一个人"听到坏消息时"的面部变化过程，从第一秒到第十秒，逐帧记录。',examples:[{label:'神态·小说',text:'他的嘴角动了动，想笑又没笑出来，最后只挤出一个像是哭的表情。',src:'余华《活着》',an:'嘴角→想笑→没笑→哭的表情，一个面部变化写尽人生的苦涩。'},{label:'神态·小说',text:'她瞪大了眼睛，眼白里的血丝像地图一样展开。',src:'莫言《蛙》',an:'"血丝像地图"既是神态描写也是比喻。'}]},
+  {id:'psychology_desc',name:'心理描写',cat:'描写',catNo:29,sub:'深入内心，让读者听见人物的心声',desc:'心理描写是直接展示人物内心世界的活动、想法和感受。分为内心独白、心理分析和意识流。',tip:'心理描写容易写成"流水账"。好的心理描写要有"冲突"——两个念头在打架，而不是一个人在自言自语。',practice:'描写一个人"站在前任家门口却没敲门"的心理活动，写出至少三个层次的内心冲突。',examples:[{label:'心理·小说',text:'我想回去，但我没有回去。我害怕回去之后发现，那个地方已经不认识我了。',src:'刘亮程《一个人的村庄》',an:'内心独白式的自我对话，"想"与"怕"的拉锯构成心理张力。'},{label:'心理·小说',text:'她表面上在听他说话，心里却已经走了十万八千里。',src:'现代小说',an:'表面行为（听）与内心行为（走）的对比。'}]},
+  {id:'dialogue_desc',name:'语言描写',cat:'描写',catNo:30,sub:'对话即人物，一句话立住一个人',desc:'语言描写是通过人物对话和独白来展现性格、推动情节。好的对话不是"传达信息"，而是"暴露人格"。',tip:'每个人物应该有独特的"声音指纹"。问自己：如果遮住名字，读者能猜出是谁在说话吗？',practice:'写一段三个人的对话（如两个朋友和一位老人），不标注谁在说话，让读者通过语言风格自行判断。',examples:[{label:'对话·小说',text:'"真的？""真的。""你发誓？""我发誓。""那……你再说一遍。""我爱你。"',src:'王小波《爱你就像爱生命》',an:'极简对话，问号与句号的交替，紧张感在最短的句子里产生。'},{label:'对话·小说',text:'"吃了吗？""吃了。""吃的啥？""吃了碗面。""啥面？""牛肉面。""好吃吗？""还行。"',src:'刘震云《一句顶一万句》',an:'中国式寒暄的荒诞感，说了五句等于什么都没说。'}]},
+  {id:'appearance_desc',name:'外貌描写',cat:'描写',catNo:31,sub:'不只是五官，更是人物命运的地图',desc:'外貌描写是刻画人物的外在特征（容貌、身材、服饰、气质）。好的外貌描写不只"拍照"，而是透过外貌暗示性格和命运。',tip:'外貌描写的最高境界是"以貌写心"。不要从头到脚扫描一遍，选一个最"说话"的部位深入写。',practice:'描写一个你熟悉的人，不写五官全貌，只写TA的"手"和"鞋"，让读者推断出TA的职业和性格。',examples:[{label:'外貌·小说',text:'他身材矮小，但头很大，站在人群里像一根感叹号。',src:'现代小说',an:'身材+头的比例暗示智力与身体的反差。'},{label:'外貌·小说',text:'她的手很粗糙，指节粗大，像老树根，但指甲总是修剪得干干净净。',src:'路遥《平凡的世界》',an:'手的粗糙暗示劳苦，指甲干净暗示自尊。'}]},
+  {id:'environment_desc',name:'环境描写',cat:'描写',catNo:32,sub:'渲染氛围，烘托情感，推动情节',desc:'环境描写是对人物所处的自然环境或社会环境的描写。它承担三大功能：渲染氛围、烘托情感、推动情节。',tip:'环境不是背景板，而是"另一个角色"。写环境时问自己：这个环境对人物做了什么？',practice:'用环境描写渲染"考试前教室里的紧张气氛"，不写任何人，只用环境和物件传递压力。',examples:[{label:'环境·小说',text:'四下里一片寂静，连狗都不叫了，空气里有一种黏稠的、喘不过气来的东西。',src:'莫言《红高粱家族》',an:'用"狗不叫"和"空气黏稠"暗示暴风雨前的压抑。'},{label:'环境·散文',text:'天黑得像一口倒扣的铁锅，压得人喘不过气。',src:'现代散文',an:'天色用"铁锅"比喻，环境的压迫感直接转化为身体感受。'}]},
+  {id:'scene_desc',name:'场面描写',cat:'描写',catNo:33,sub:'全景把控，群像与细节的调度',desc:'场面描写是对特定时空内人物活动的整体场景进行铺陈。需要"广角镜头"和"特写镜头"的配合。',tip:'场面描写的秘诀是"远近交替"。先给全景（一镜头扫过），再聚焦到一个点（一个人/一个动作），再拉回全景。',practice:'描写"课间十分钟的教室"，先用广角再给三个特写（不同学生的不同状态）。',examples:[{label:'场面·小说',text:'菜市场里人声鼎沸，卖鱼的在杀鱼，卖菜的在吵架，一个孩子坐在菜筐里啃黄瓜，远处广播里放着天气预报。',src:'现代小说',an:'广角→中景→特写，三层调度一气呵成。'},{label:'场面·散文',text:'除夕的厨房像一座战场：灶台上四口锅同时冒着蒸汽，母亲在中间穿梭，像一位指挥若定的将军。',src:'现代散文',an:'厨房=战场的比喻统领全场，母亲=将军让混乱有了中心。'}]},
+  {id:'baidiao',name:'白描',cat:'描写',catNo:34,sub:'不加修饰，朴素勾勒，力透纸背',desc:'白描是用最简练的文字，不加渲染和烘托，直接勾勒事物的轮廓和特征。源自中国画技法，强调"以少胜多"。',tip:'白描的难度在于"克制"。每用一个形容词就问自己：能不能删掉？能用动词解决的就别用形容词。',practice:'用白描手法写一个你每天路过的地方，限100字内，禁止使用形容词和比喻。',examples:[{label:'白描·小说',text:'门前有一个水坑，有几只鸭子在里面游泳。',src:'鲁迅《鸭的喜剧》',an:'没有形容词，没有修辞，朴素到极致，却画面感十足。'},{label:'白描·诗歌',text:'枯藤老树昏鸦，小桥流水人家。',src:'马致远《天净沙·秋思》',an:'九个名词堆叠，不加一个动词和形容词，画面自己说话。'}]},
+  {id:'gongbi',name:'工笔',cat:'描写',catNo:35,sub:'精雕细刻，纤毫毕现',desc:'工笔是细致入微的描写，如同工笔画一样，对每一个细节进行精雕细刻。与白描相反，工笔追求"尽精刻微"。',tip:'工笔的核心是"慢"。把一秒钟的动作拉长到十秒来写，把肉眼一眼带过的事物放到放大镜下看。',practice:'用工笔手法描写"一个人泡茶"或"一碗面的制作过程"，至少写出六个步骤的细节。',examples:[{label:'工笔·散文',text:'那片叶子的边缘微微卷起，卷起的部分呈焦黄色，像被火燎过。叶脉从叶柄向四周辐射，最粗的那根主脉微微凸起，用手摸能感到一条细长的棱。',src:'现代散文',an:'从边缘→颜色→叶脉→触感，层层推进。'},{label:'工笔·小说',text:'她慢慢地涂口红。先用唇笔沿唇线描一圈，再从中间向两边填，涂完上唇涂下唇，最后抿一下，用纸巾轻轻印去多余的颜色。',src:'张爱玲《色戒》',an:'涂口红的过程被分解为六七个动作，每个都精确如慢镜头。'}]},
+  {id:'indirect_desc',name:'侧面描写',cat:'描写',catNo:36,sub:'不写主体，通过他人他物来映衬',desc:'侧面描写是不直接描写主体，而是通过描写与之相关的其他事物来间接表现。分为以人衬人、以物衬人和以虚衬实。',tip:'侧面描写的本质是"借力"。与其自己夸，不如让旁观者替你夸。找到那个"旁观者"或"参照物"。',practice:'不直接描写一个人"很可怕"，用侧面描写（周围人的反应、环境的变化）来让读者感受到TA的压迫感。',examples:[{label:'侧面·古文',text:'行者见罗敷，下担捋髭须。少年见罗敷，脱帽著帩头。耕者忘其犁，锄者忘其锄。',src:'《陌上桑》',an:'不直接写罗敷多美，写所有人看到她都忘了正事。'},{label:'侧面·小说',text:'整个大厅的人都安静下来，所有的目光都转向门口走进来的那个人。',src:'现代小说',an:'不直接写人物气场多大，用"安静"和"目光"来侧面烘托。'}]},
+
+  // 叙事技法（37-46）
+  {id:'chronological',name:'顺叙',cat:'叙事',catNo:37,sub:'按时间顺序展开，最基础也最考验功力',desc:'顺叙是按照事件发生、发展的时间先后顺序来叙述。好的顺叙会在时间流中埋设节奏变化——该快则快，该慢则慢。',tip:'顺叙的陷阱是"流水账"。解决方案：控制节奏——重要时刻放慢（放大），过渡时刻加快（压缩）。',practice:'用顺叙写一个"从起床到出门"的早晨，关键事件放慢写，过渡一笔带过。',examples:[{label:'顺叙·小说',text:'他早上六点起床，七点吃饭，八点到工厂，九点开始干活。中午十二点下班，吃了两个馒头，一点又回去。就这样，一天过去了，一年过去了，十年过去了。',src:'现代小说',an:'时间线条清晰，从一天到十年加速，顺叙中暗含时间压缩。'}]},
+  {id:'flashback',name:'倒叙',cat:'叙事',catNo:38,sub:'先给结果，再回溯原因，制造悬念',desc:'倒叙是把事件的结局或某个最重要、最突出的片段提到文章开头，然后再按时间顺序叙述。它能制造悬念，抓住读者注意力。',tip:'倒叙开头要"抛钩子"——给一个足够吸引人的结果，但不解释原因。让读者带着疑问跟着你往回走。',practice:'用倒叙手法写一个关于"遗憾"的故事开头（100字内）：先写结果，再回到那个关键的决定时刻。',examples:[{label:'倒叙·小说',text:'多年以后，面对行刑队，奥雷里亚诺·布恩迪亚上校将会回想起父亲带他去见识冰块的那个遥远的下午。',src:'马尔克斯《百年孤独》',an:'开头一句话包含三重时间（未来/现在/过去），倒叙的终极范本。'},{label:'倒叙·散文',text:'那棵槐树现在已经不在了。但在我记忆里，它还站在老家的院门口，枝繁叶茂。',src:'现代散文',an:'先说"不在了"制造遗憾，再回溯记忆中的繁茂。'}]},
+  {id:'interlude',name:'插叙',cat:'叙事',catNo:39,sub:'主线中插入回忆，丰富叙事层次',desc:'插叙是在叙述主线事件的过程中，暂时中断，插入一段与主线相关的回忆或背景。它能补充信息、深化主题。',tip:'插叙需要"触发器"——一个物件、一句话、一个场景，自然地把叙述拉回到过去。不要突然跳转。',practice:'写一段插叙：主角看到某个物件（如旧手表、褪色照片），由此插入一段回忆。',examples:[{label:'插叙·小说',text:'他站在车站，看着火车远去。（插叙：十年前，也是这个车站，他送走母亲时说过同样的话。）火车彻底看不见了。',src:'现代小说',an:'括号处插入十年前记忆，打破单一时间线。'}]},
+  {id:'supplement',name:'补叙',cat:'叙事',catNo:40,sub:'事后补充，解开悬念',desc:'补叙是在叙述完主要事件后，再补充说明与之相关的重要信息。常用来"解密"——前面故意隐瞒的信息在结尾揭开。',tip:'补叙的关键是"前面要藏好"。如果读者过早猜到真相，补叙就失去了冲击力。',practice:'写一个关于"误会"的短故事，结尾用补叙揭开真相，让读者重新理解全文。',examples:[{label:'补叙·小说',text:'他终于打开了那封信。信上只有一句话："其实那天我也在车站。"（补叙：原来三年前那个雨天，她也去了同一个车站，只是他们隔了一层雾玻璃。）',src:'现代小说',an:'信的内容解开悬念，补叙揭示两人命运的交错。'}]},
+  {id:'parallel_narrative',name:'分叙',cat:'叙事',catNo:41,sub:'多条线索并行，交织推进',desc:'分叙是将两个或多个同时发生的事件交替叙述，形成"双线"或"多线"结构。常见于悬疑小说和史诗叙事。',tip:'分叙的核心是"交汇点"。两条线不能永远平行，必须在某个关键时刻交汇（或擦肩而过）。',practice:'用分叙手法写"两个人约好见面但走岔了"的场景，交替写两条线，最后在交汇处揭晓。',examples:[{label:'分叙·小说',text:'同一时刻——城东，警察撬开了那扇门。城西，他正在厨房烧水，电视里播着晚间新闻。',src:'现代悬疑小说',an:'同一时刻两个空间交替叙述，读者知道警察在靠近但人物不知道。'}]},
+  {id:'first_person',name:'第一人称',cat:'叙事',catNo:42,sub:'"我"的视角，主观、亲密、有局限',desc:'第一人称是以"我"的身份和视角来叙述。优点是代入感强、情感真实；缺点是视角受限。',tip:'第一人称的局限是优势。利用"我不知道""我没看见"来制造悬念和留白。',practice:'用第一人称写一个"小时候误解了大人的某件事"的片段，保持儿童视角的局限性。',examples:[{label:'第一人称·小说',text:'我不知道那天晚上发生了什么。我只记得灯灭了，有人尖叫，然后一切都安静了。第二天早上，门口多了一双鞋。',src:'现代小说',an:'"我"只能看到自己看到的，这种局限反而制造了悬念。'}]},
+  {id:'third_person',name:'第三人称',cat:'叙事',catNo:43,sub:'全知视角，上帝之眼俯瞰众生',desc:'第三人称是以旁观者视角叙述，用"他/她/他们"。分为全知视角和限制视角。灵活度最高，适合长篇小说。',tip:'第三人称不一定"全知"。尝试用"限制第三人称"——只写一个角色看到的，反而更有悬念。',practice:'用第三人称限制视角写一个场景（只写一个人看到的、听到的、想到的），让读者像影子一样跟着TA。',examples:[{label:'第三人称·小说',text:'孙少平蹲在工地的土墙后面，啃着黑面馍。他抬头看了一眼天空，天空很蓝，蓝得和他此刻的心情完全相反。',src:'路遥《平凡的世界》',an:'限制视角（跟随孙少平），天蓝与心情"相反"是叙述者的评价。'}]},
+  {id:'multi_pov',name:'多视角',cat:'叙事',catNo:44,sub:'同一事件，不同人的版本',desc:'多视角是让不同人物轮流叙述同一事件或同一时间段的故事。每个视角都是一个"真相的碎片"。',tip:'多视角的核心是"不可靠叙述"。让每个叙述者都相信自己说的是真的，但读者会发现矛盾。',practice:'用三个不同人物的视角叙述"同一场争吵"，每个人对事件的描述都有偏差。',examples:[{label:'多视角·小说',text:'【甲说】我看到他从巷子口走过来，手里拿着一根棍子。【乙说】我根本没拿棍子，那是我的伞。【丙说】我看到的是一把伞，不是棍子。',src:'现代小说',an:'同一事件三个版本，谁在说谎？真相在视角碰撞中变得模糊。'}]},
+  {id:'foreshadowing',name:'伏笔',cat:'叙事',catNo:45,sub:'前文埋下暗示，后文揭晓',desc:'伏笔是在故事前面埋下暗示性线索，到后面才揭示其意义。分为物件伏笔、对话伏笔和环境伏笔。',tip:'好的伏笔要"轻"。第一次出现时像闲笔，第二次出现时像炸弹。',practice:'写一个200字短故事，在前1/3处埋一个伏笔（一个物件或一句话），在结尾处回收。',examples:[{label:'伏笔·小说',text:'第三章，他出门前看了一眼桌上的钥匙，没拿。（伏笔）第二十七章，凶手用这把钥匙打开了门。',src:'现代悬疑小说',an:'"没拿钥匙"在第三章看似随意，到结局才揭示是致命疏忽。'}]},
+  {id:'suspense',name:'悬念',cat:'叙事',catNo:46,sub:'制造疑问，让读者追着读下去',desc:'悬念是在叙述中有意制造疑问和未知，激发读者的好奇心和期待感。分为开头悬念、过程悬念和终极悬念。',tip:'悬念的公式是"信息差"——让读者知道有问题存在，但不给答案。每章结尾留一个"钩子"。',practice:'写一个开头（100字内），用悬念抓住读者：抛出一个问题或展示一个反常画面，但不解释。',examples:[{label:'悬念·小说',text:'那扇门后是什么？他不知道。读者也不知道。但他伸手推开了。',src:'现代小说',an:'三个短句三层悬念递进：门后是什么→他知道吗→他推开了。'},{label:'悬念·散文',text:'很多年以后，我终于回到了那间屋子。门没锁。但我站在门口，不敢进去。',src:'现代散文',an:'"不敢进去"制造悬念：里面有什么？为什么不敢？'}]},
+
+  // 结构布局（47-54）
+  {id:'total_divide_total',name:'总分总',cat:'结构',catNo:47,sub:'开头总起—分述—结尾总结，最经典的结构',desc:'总分总是先总括全文观点或内容，再分点展开论述，最后总结回扣。逻辑清晰、层次分明。',tip:'总分总的"总"不能重复。开头的"总"是抛出论点，结尾的"总"是升华——要么更深，要么更广。',practice:'用总分总结构写一篇关于"坚持"的短文（200字）：开头亮观点，中间三个事例，结尾升华。',examples:[{label:'总分总·散文',text:'北平的秋天最美。（总）天高云淡，香山的红叶如火，胡同里的枣子挂满枝头，烤红薯的香气飘满大街小巷。（分）这样的秋天，让人舍不得离开。（总）',src:'现代散文',an:'一句话总起→三个画面分述→一句话收束。'}]},
+  {id:'progressive',name:'递进式',cat:'结构',catNo:48,sub:'层层深入，一步比一步更接近本质',desc:'递进式是各段落之间按"由浅入深、由表及里"的逻辑层层推进。每一层都比前一层更接近问题的核心。',tip:'递进式的秘诀是"每进一步都要让读者觉得更深一层"。如果第二层和第一层差不多，就不是递进。',practice:'以"我眼中的父亲"为题，用递进式写四个层次（从远到近、从外到内）。',examples:[{label:'递进·散文',text:'我看见了他。我认识了他。我理解了他。我爱上了他。',src:'现代散文',an:'四个短句四层递进，从视觉到情感，关系的深度逐层加深。'}]},
+  {id:'parallel_struct',name:'并列式',cat:'结构',catNo:49,sub:'几个板块平行展开，各司其职',desc:'并列式是将文章分为几个相对独立但围绕同一主题的板块，彼此平行、不分主次。适合写人物群像和多面主题。',tip:'并列式各部分要有"统一的对仗感"。结构相似、篇幅相近，读起来才有节奏美。',practice:'以"故乡的味道"为题，用并列式写三种味道（三种食物），每种100字左右。',examples:[{label:'并列·散文',text:'老家的三种声音：清晨鸡鸣，午后蝉噪，入夜狗吠。三种声音，三种时间，一个完整的乡村。',src:'现代散文',an:'三个并列板块，各自独立又共同构成整体。'}]},
+  {id:'contrast_struct',name:'对照式',cat:'结构',catNo:50,sub:'正反对照，在碰撞中凸显主题',desc:'对照式是将两种相反或相对的事物、观点并置对照，通过反差凸显主题。分为"A vs B"双线对照和"过去 vs 现在"时间对照。',tip:'对照式要"对照到底"。每一个A点都要有对应的B点，形成整齐的镜像结构。',practice:'用对照式写"两个同学的不同选择导致的不同结果"，A和B各写一段，形成镜像。',examples:[{label:'对照·散文',text:'城市里，人们住在楼房里，互相不说话。乡村里，人们住在院子里，隔着墙头聊天。',src:'现代散文',an:'城市/乡村对照，楼房/院子对照，不说话/聊天对照。'}]},
+  {id:'qi_cheng_zhuan_he',name:'起承转合',cat:'结构',catNo:51,sub:'起笔→承接→转折→收束，古典文章的四步法',desc:'起承转合是中国古典诗文最经典的结构：起（开头点题）、承（承接展开）、转（转折变化）、合（收束全篇点明主旨）。',tip:'"转"是全文最关键的时刻。没有转折就没有故事。在"承"的部分就要为"转"蓄力。',practice:'用起承转合结构写一个200字小故事：开头设境→展开→突然转折→收束点题。',examples:[{label:'起承转合·诗歌',text:'月落乌啼霜满天（起：设境），江枫渔火对愁眠（承：入情）。姑苏城外寒山寺（转：另开一层），夜半钟声到客船（合：以景收束）。',src:'张继《枫桥夜泊》',an:'四句四步，起承转合完整闭环。'}]},
+  {id:'direct_opening',name:'开门见山',cat:'结构',catNo:52,sub:'开篇直接点题，不绕弯子',desc:'开门见山是在文章开头就直接亮明主题、观点或核心事件，不铺垫不渲染。适合议论文、新闻稿和时间紧迫的叙事。',tip:'开门见山不是"没文采"，而是"有态度"。第一句就要让读者知道：这篇文章要干什么。',practice:'用开门见山的方式写三个不同文体的开头：议论文（亮观点）、记叙文（亮事件）、散文（亮情感）。',examples:[{label:'开门见山·散文',text:'我最难忘的人是我的小学老师。',src:'现代散文',an:'第一句就是全文主题，不浪费任何笔墨。'},{label:'开门见山·小说',text:'那天我杀了人。',src:'现代小说',an:'七个字交代核心事件，读者不可能不继续读。'}]},
+  {id:'ending_climax',name:'卒章显志',cat:'结构',catNo:53,sub:'结尾处揭示主旨，画龙点睛',desc:'卒章显志是在文章结尾处才点明主旨或升华主题。前文只叙事不议论，把所有"判断"留到最后一句。',tip:'卒章显志的结尾要"轻而重"。文字可以简单，但分量要沉。避免在前文提前"剧透"主题。',practice:'写一篇200字短文，前面只叙事不议论，最后一句才揭示你真正想表达的情感。',examples:[{label:'卒章显志·散文',text:'（前文写母亲一生劳苦）……这就是我的母亲。她没有名字。',src:'现代散文',an:'最后一句才揭示主旨——不是写母亲多么伟大，而是写她连名字都没有。'}]},
+  {id:'首尾呼应',name:'首尾呼应',cat:'结构',catNo:54,sub:'开头结尾形成闭环，文章圆融完整',desc:'首尾呼应是在文章结尾处回扣开头的内容、意象或语句，形成结构上的闭环。让读者产生"原来如此"的阅读体验。',tip:'好的首尾呼应不是"重复"，而是"变奏"。同样的句子/意象在结尾出现时，应该因为中间的内容而获得新的重量。',practice:'写一篇短文，开头和结尾使用同一个意象（如一把伞、一扇窗），但赋予它不同的含义。',examples:[{label:'首尾呼应·散文',text:'开头：那年夏天，我从这条路离开家乡。结尾：多年以后，我又从这条路回到家乡。路还是那条路，走的人已经不是那个人了。',src:'现代散文',an:'同一条路、同一个动作，首尾镜像呼应，时间完成一个闭环。'}]},
+
+  // 抒情技法（55-60）
+  {id:'direct_lyric',name:'直抒胸臆',cat:'抒情',catNo:55,sub:'直接喊出心中所想，不加掩饰',desc:'直抒胸臆是不借助任何中介，直接表达内心情感。像一首歌的高潮部分，情感喷薄而出。',tip:'直抒胸臆不是"喊口号"。它需要有真实的情感积累，前面的铺垫越厚，最后一句直抒越有力量。',practice:'写一篇200字的抒情短文，前面铺垫情感，最后用一句直抒胸臆收束。',examples:[{label:'直抒·诗歌',text:'我爱你，中国！',src:'歌词·瞿琮',an:'五个字，没有比喻没有修辞，情感直接到不需要任何包装。'},{label:'直抒·诗歌',text:'为什么我的眼里常含泪水？因为我对这土地爱得深沉。',src:'艾青《我爱这土地》',an:'设问+直抒，眼泪的原因直接说出——爱。'}]},
+  {id:'scene_lyric',name:'借景抒情',cat:'抒情',catNo:56,sub:'把情感藏进景物里，让读者自己找',desc:'借景抒情是通过对景物的描写来寄托和抒发情感。分为乐景写乐情（正衬）和乐景写哀情（反衬）。',tip:'借景抒情的关键是"选景"。不要随便写风景，要写"带着你情绪色彩的风景"——同样下雨，开心时是"滋润"，悲伤时是"哭泣"。',practice:'以"离别"为主题，只写景物（不写人物对话和内心独白），让读者从景物中感受到离愁。',examples:[{label:'借景·诗歌',text:'枯藤老树昏鸦，小桥流水人家，古道西风瘦马。夕阳西下，断肠人在天涯。',src:'马致远《天净沙·秋思》',an:'全部是景物，没有一个"愁"字，但"断肠"让所有景物都有了愁的颜色。'},{label:'借景·诗歌',text:'春花秋月何时了，往事知多少。',src:'李煜《虞美人》',an:'美好的春花秋月反而成为痛苦的提醒——以乐景写哀情。'}]},
+  {id:'object_lyric',name:'托物言志',cat:'抒情',catNo:57,sub:'借助事物表达志向，物我合一',desc:'托物言志是通过对某一事物的描写来寄托作者的志向、品格和理想。重点不是"情"而是"志"——要表达一种人生态度。',tip:'托物言志要"物志合一"。所托之物本身的特性要与所言之志高度吻合，不能硬套。',practice:'选一种植物（如松、梅、菊、兰），用托物言志的手法写一段200字短文，表达一种你认同的品格。',examples:[{label:'托物·诗歌',text:'千磨万击还坚劲，任尔东西南北风。',src:'郑燮《竹石》',an:'竹子经历千磨万击依然坚劲——写竹即写人。'},{label:'托物·散文',text:'出淤泥而不染，濯清涟而不妖。',src:'周敦颐《爱莲说》',an:'莲花从淤泥中长出却不染污——君子品格的物化表达。'}]},
+  {id:'event_lyric',name:'寓情于事',cat:'抒情',catNo:58,sub:'在叙事中蕴含情感，事毕情出',desc:'寓情于事是把情感融入到事件的叙述中，不直接抒情，而是通过事件的选择和细节的取舍来传递情感。',tip:'寓情于事的核心是"选对事件"。不是所有事都能承载情感，要选那些"有细节、有动作、有温度"的小事。',practice:'写一个关于"想念"的片段（200字），不直接写"我想你"，用一个具体的事件来承载思念。',examples:[{label:'寓情·散文',text:'每次回家，母亲都会做那道红烧肉。有一次我提前回来，看见她在厨房里反复尝味道，咸了加水，淡了加盐，来回折腾了半小时。',src:'现代散文',an:'不直接说"母爱深沉"，"反复尝味道"这个事件本身就承载了一切。'}]},
+  {id:'reason_lyric',name:'寓情于理',cat:'抒情',catNo:59,sub:'在议论中渗透情感，理中有情',desc:'寓情于理是在议论、说理的过程中渗透情感，让读者在认同观点的同时也被情感打动。不追求逻辑严密，而追求"情理交融"。',tip:'寓情于理的关键是"最后一句话"。前面可以很理性，但结尾要"软下来"——一句带感情的话，让整段文字的温度升上来。',practice:'以"为什么要坚持写作"为题，写一段寓情于理的文字（200字）：前面说理，最后一句动情。',examples:[{label:'寓情·散文',text:'人是要有一点精神的。没有精神，活着和死了有什么区别？但精神不是喊出来的，是一天一天熬出来的。',src:'现代散文',an:'前两句是理，后一句是情，说理中带着对普通人的深情。'}]},
+  {id:'scene_ending',name:'以景结情',cat:'抒情',catNo:60,sub:'以景物描写结束，余韵悠长',desc:'以景结情是在文章或段落的结尾处，不直接抒情或议论，而是以一处景物描写收束。让读者在画面中自行体会情感。',tip:'以景结情的景物不是随便选的。它必须与全文情感"同频"——快乐的结尾用明亮的景，悲伤的结尾用暗淡的景。',practice:'写一篇200字短文，结尾用"以景结情"：前面叙事，最后一句落在景物上，让读者自己体会情绪。',examples:[{label:'以景结情·诗歌',text:'孤帆远影碧空尽，唯见长江天际流。',src:'李白《黄鹤楼送孟浩然之广陵》',an:'不写"我好舍不得"，只写帆影消失、江水东流。'},{label:'以景结情·散文',text:'（全文写母亲的辛劳与老去）……窗外的月光静静地照进来，落在她花白的头发上。',src:'现代散文',an:'全文的情感在最后一句话里收束为一个画面。'}]},
+
+  // 炼字造句（61-68）
+  {id:'verb_choice',name:'动词锤炼',cat:'炼字',catNo:61,sub:'一个精准动词，胜过十个形容词',desc:'动词锤炼是选用最精准、最有力的动词来描写动作。好的动词能让句子"活"起来。',tip:'写完一句动作描写后，圈出所有动词，问自己：有没有更精准的？"走"→"踱""蹭""窜""溜"，每个都有不同的质感。',practice:'写一段"猫捉老鼠"的场面（100字），全部用精准动词，形容词不超过3个。',examples:[{label:'动词·小说',text:'他蹿上墙头，纵身一跳，落在对面的屋顶上。',src:'现代小说',an:'"蹿""纵""落"三个动词精准刻画动作序列。'},{label:'动词·诗歌',text:'春风又绿江南岸。',src:'王安石《泊船瓜洲》',an:'"绿"字本是形容词，这里用作动词——春风使江南变绿。一字千金。'}]},
+  {id:'adj_flex',name:'形容词活用',cat:'炼字',catNo:62,sub:'打破常规，让形容词产生新鲜感',desc:'形容词活用是将形容词用作动词、名词或其他词性，打破语法常规，产生新颖的表达效果。',tip:'形容词活用的核心是"违反直觉"。让读者觉得"语法上好像不对，但感觉上特别对"。',practice:'用形容词活用的手法写三句话（形容词作动词、作名词各一），让普通表达变得新鲜。',examples:[{label:'活用·诗歌',text:'红了樱桃，绿了芭蕉。',src:'蒋捷《一剪梅》',an:'红、绿本是形容词，这里用作动词——樱桃自己变红，芭蕉自己变绿。'},{label:'活用·现代',text:'他的话让我沉默了很久，那种沉默是黑色的。',src:'现代散文',an:'"黑色"本是形容词，这里用作名词，沉默有了颜色。'}]},
+  {id:'reduplication',name:'叠词运用',cat:'炼字',catNo:63,sub:'重复音节，增强韵律和画面感',desc:'叠词是重复相同的字或音节来构成词语，如"轻轻""慢慢""苍苍"。它产生音乐般的韵律感，同时能增强描写的形象性。',tip:'叠词有两种用法：一是"强化"（轻轻=很轻），二是"柔化"（写散文用叠词比单字更温柔）。',practice:'用叠词写一段关于"雨"的描写（100字），至少使用5个叠词。',examples:[{label:'叠词·诗歌',text:'寻寻觅觅，冷冷清清，凄凄惨惨戚戚。',src:'李清照《声声慢》',an:'七组叠词，从动作到环境到心境层层下沉。'},{label:'叠词·诗歌',text:'青青河畔草，郁郁园中柳。盈盈楼上女，皎皎当窗牖。',src:'《古诗十九首》',an:'句句叠词开头，韵律如歌谣。'}]},
+  {id:'sentence_rhythm',name:'长短句交错',cat:'炼字',catNo:64,sub:'长句舒缓，短句急促，节奏即情绪',desc:'长短句交错是交替使用长句和短句来控制阅读的节奏。长句舒缓、绵密，适合抒情；短句急促、有力，适合动作和强调。',tip:'控制节奏的方法：激动时用短句（3-5字），沉思时用长句（20字以上）。一段文字里长短交替，读者会"呼吸"起来。',practice:'用长短句交错写一段"跑步"的体验：冲刺时用短句，慢跑时用长句。',examples:[{label:'长短·散文',text:'他来了。带着满身的尘土和一脸的疲惫。三年的漂泊，三年的时间，把一个人从一个地方推到了另一个地方。但他终于来了。',src:'现代散文',an:'短句→长句→短句，节奏的起伏对应情感的高低。'}]},
+  {id:'parallel_free_mix',name:'整散结合',cat:'炼字',catNo:65,sub:'整齐句与散句搭配，既有力又不呆板',desc:'整散结合是将结构整齐的整句（对偶、排比）与结构自由的散句交替使用。全用整句会僵，全用散句会散。',tip:'整散结合的原则：用整句"立观点"，用散句"展开来"。一段文字里至少要有一次从整到散的切换。',practice:'写一段关于"旅行"的文字（200字），交替使用整句（排比或对偶）和散句。',examples:[{label:'整散·散文',text:'读书让人开阔，让人深邃，让人从容。（整）但光读书不够。你还得走路，得与人交谈，得在深夜独自思考。（散）读书是输入，生活才是输出。（整）',src:'文化散文',an:'整句→散句→整句，节奏有张有弛。'}]},
+  {id:'classical_modern',name:'文言白话交融',cat:'炼字',catNo:66,sub:'典雅与通俗有机结合，古今碰撞出新意',desc:'文言白话交融是将文言文的精炼、典雅与白话文的通俗、流畅结合起来。产生独特的"文白张力"。',tip:'文白交融的秘诀是"以白为主，以文点缀"。全文用白话，偶尔插入一两个文言短句，效果最明显。',practice:'写一篇短文（200字），用白话叙述主体，在关键处插入2-3个文言短句。',examples:[{label:'文白·散文',text:'人生不如意事十之八九。剩下的一二，是那些微小的、不期而遇的温暖——比如深秋午后的一杯热茶。',src:'现代散文',an:'"十之八九"是文言表达，后半句是白话叙述。'},{label:'文白·诗歌',text:'俱往矣，数风流人物，还看今朝。',src:'毛泽东《沁园春·雪》',an:'"俱往矣"文言收束，"还看今朝"白话展望。'}]},
+  {id:'colloquial',name:'口语化表达',cat:'炼字',catNo:67,sub:'贴近生活的自然语言，真诚而有力量',desc:'口语化表达是采用日常说话的方式来写作，不使用书面化的华丽辞藻。产生亲切感和真实感。',tip:'口语化不是"粗糙"。好的口语化是经过提炼的日常语言——像说话一样自然，但每个词都经过选择。',practice:'用口语化的方式写一篇关于"你最怕的一件事"的短文（200字），像跟朋友聊天一样写。',examples:[{label:'口语·散文',text:'这豆腐脑，说白了就是豆浆凝固了。但凝固得好不好，全看手上的功夫。点卤那一瞬间，差一秒都不行。',src:'汪曾祺风格',an:'"说白了"是典型的口语开场，把复杂道理用大白话讲清楚。'},{label:'口语·小说',text:'"你吃了吗？""吃了。""吃的啥？""面条。""啥面？""牛肉面。""好吃吗？""还行。"',src:'刘震云《一句顶一万句》',an:'日常对话原样搬入小说，中国式寒暄的荒诞与温暖。'}]},
+  {id:'rhythm_control',name:'节奏控制',cat:'炼字',catNo:68,sub:'通过标点和断句控制阅读节奏',desc:'节奏控制是通过标点符号、断句方式和段落长短来操控读者的阅读速度。逗号让人慢，句号让人停，短段让人喘不过气。',tip:'想让读者快就写短句少标点。想让读者慢就写长句多停顿。段落长度也是节奏——一段只有一句话，本身就是一次"刹车"。',practice:'用节奏控制写一段"等待面试"的场景：紧张时用短句（多句号），回忆时用长句（多逗号）。',examples:[{label:'节奏·小说',text:'他跑。他喘。他回头。后面没有人。但他还是跑。',src:'现代悬疑小说',an:'五个句号五个短句，每句一个动作，阅读速度被强制加快。'},{label:'节奏·散文',text:'雨停了。天还是灰的。院子里积了一洼水。一只鸟落在水洼边，低头看了一眼自己的倒影。然后飞走了。',src:'现代散文',an:'六句话六个句号，每句停顿一次，画面像慢镜头推进。'}]},
+];
+
+/* 命题库 */
+const PROMPTS = [
+  {tag:'比喻·场景',title:'雨后的老巷子',text:'请以"雨后的老巷子"为题，用比喻让读者"看到"这个空间。至少用1个明喻或暗喻。',hint:'💡 水洼像什么？墙角的苔藓摸起来什么感觉？',skill:'metaphor'},{tag:'拟人·场景',title:'清晨的房间',text:'描写一个"清晨的房间"（无人状态），让房间里的物件"醒来"各忙各的。至少3个拟人句。',hint:'💡 台灯、书本、窗帘、茶杯……选两三个赋予人的状态。',skill:'personification'},{tag:'排比·议论',title:'慢生活',text:'谈谈你对"慢生活"的理解。有明确观点，用排比句式增强说服力。',hint:'💡 先亮观点再展开。可以借鉴"燕子去了/杨柳枯了/桃花谢了"的排比节奏。',skill:'parallelism'},{tag:'夸张·情感',title:'一次等待',text:'描写"等人"的体验，用夸张手法让读者感受到时间的"变形"。',hint:'💡 五分钟像五小时？心跳声大得像打鼓？夸张要"离谱但合理"。',skill:'hyperbole'},{tag:'对比·时间',title:'一张旧照片',text:'以"一张旧照片"为线索，用对比手法写"过去"和"现在"两段画面。',hint:'💡 照片里的笑 vs 现在的沉默；满头黑发 vs 白发……',skill:'contrast'},{tag:'对偶·写景',title:'故乡的四季',text:'用对偶句式写故乡的春天和秋天（或清晨和黄昏），上下两句结构对称。',hint:'💡 字数相等、词性相对。如"春风拂柳绿"对"秋雨打梧黄"。',skill:'antithesis'},{tag:'反复·记忆',title:"妈妈总是说",text:'以"妈妈总是说"为开头反复三次，每次展开不同的记忆片段。',hint:'💡 每次重复都要递进——第一次轻松，第三次沉重。',skill:'repetition'},{tag:'反问·观点',title:'关于勇气',text:'就"勇气"发表你的看法，用反问句开头和结尾。',hint:'💡 反问不是真的问，而是让观点更有力。"难道……吗？"',skill:'rhetorical_q'},{tag:'设问·议论',title:'什么是故乡',text:'以"什么是故乡？"为设问开头，自问自答写一段短文。',hint:'💡 设问的"答"要有力。用画面回答，不要用定义回答。',skill:'shenwen'},{tag:'借代·场景',title:'医院走廊',text:'描写医院走廊的场景，用至少两个借代（如"白大褂"代医生）。',hint:'💡 借代要求代体与本体关系紧密，读者一看就懂。',skill:'metonymy'},{tag:'双关·生活',title:'一段对话',text:'写一段包含双关的对话（谐音或语义均可），让一句话同时承载两层意思。',hint:'💡 表面聊日常，实际在说别的事。读者自己领悟才有趣。',skill:'pun'},{tag:'通感·音乐',title:'一首歌',text:'描写一首你喜欢的歌，用通感把它"翻译"成颜色和味道。',hint:'💡 听觉→视觉（什么颜色？）→味觉（什么味道？）→触觉（什么温度？）',skill:'synaesthesia'},{tag:'象征·事物',title:'一块石头',text:'选一个自然物（石头/河流/星星），赋予它一种人格品质，用象征手法写短文。',hint:'💡 不要直接说"石头代表坚强"，让石头的行为自己说话。',skill:'symbolism'},{tag:'用典·现代',title:'古今对话',text:'用一个你熟悉的历史典故，融入一段现代生活场景的描写中。',hint:'💡 典故要自然融入，不能硬塞。让古人的故事照亮今人的处境。',skill:'allusion'},{tag:'顶真·过程',title:'从种子到树',text:'用顶真手法写一段递进式短文：种子→发芽→幼苗→小树→大树。',hint:'💡 上句结尾作下句开头，环环相扣。',skill:'anadiplosis'},{tag:'回环·辩证',title:'得到与失去',text:'用回环手法写关于"得到与失去"的辩证短句。',hint:'💡 AB→BA结构。如"得到了自由，失去了安稳；失去了安稳，得到了自由。"',skill:'chiasmus'},{tag:'层递·时间',title:'一分钟',text:'写"一分钟"内的心理变化，从平静到紧张层层递进。',hint:'💡 每一秒比前一秒更强烈。让读者感受到时间的"重量"。',skill:'climax_rhetoric'},{tag:'感官·地方',title:'外婆的厨房',text:'描写外婆的厨房，至少调动三种感官。',hint:'💡 汪曾祺说"一箸入口，三春不忘"——味觉是最长的记忆。',skill:'sensory'},{tag:'细节·人物',title:'爷爷的手',text:'描写爷爷的手，聚焦细节，不写"爱"字但让读者感受到爱。',hint:'💡 一个动作、一道纹路、一层老茧，都比"他很辛苦"有力。',skill:'detail_desc'},{tag:'动作·等待',title:'等公交',text:'描写一个人等公交的场景，只用动作描写（不写心理和对话）。',hint:'💡 看表、踱步、叹气、张望——动作即情绪。',skill:'action_desc'},{tag:'神态·瞬间',title:'听到坏消息',text:'描写一个人听到坏消息时面部的逐帧变化（从第一秒到第十秒）。',hint:'💡 眼睛→嘴角→眉毛→脸色，每个部位依次"汇报"内心。',skill:'expression_desc'},{tag:'心理·冲突',title:'站在门口',text:'描写一个人"站在前任家门口却没敲门"的心理活动，至少三个层次。',hint:'💡 想敲门→不敢敲→应该走了→还是没走。内心拉锯。',skill:'psychology_desc'},{tag:'白描·速写',title:'路过的地方',text:'用白描手法写一个你每天路过的地方，限100字，禁止形容词和比喻。',hint:'💡 只写看到的事实：墙是什么颜色、地上有什么、谁在那里。',skill:'baidiao'},{tag:'工笔·过程',title:'泡茶',text:'用工笔手法描写泡茶的过程，至少写出六个步骤的细节。',hint:'💡 慢镜头：取茶→注水→看茶叶舒展→等→闻香→品。',skill:'gongbi'},{tag:'侧面·气场',title:'他走进来',text:'不直接写这个人"很可怕"，用侧面描写让读者感受到压迫感。',hint:'💡 笑声突然停了？空气变冷了？别人下意识后退了？',skill:'indirect_desc'},{tag:'倒叙·开头',title:'那棵树不在了',text:'用倒叙写一个关于"遗憾"的故事开头：先写结果，再回到关键决定时刻。',hint:'💡 第一句就抛钩子："那棵树现在不在了。"',skill:'flashback'},{tag:'伏笔·短篇',title:'一把钥匙',text:'写一个200字短故事，前1/3埋伏笔（一个物件），结尾回收。',hint:'💡 伏笔第一次出现要像闲笔，第二次出现像炸弹。',skill:'foreshadowing'},{tag:'悬念·开头',title:'开门见疑',text:'写一个开头（100字内），展示一个反常画面或抛出一个问题，但不解释。',hint:'💡 "她烧掉了那封信。但信里写了什么？"',skill:'suspense'},{tag:'总分总·议论',title:'坚持',text:'用总分总结构写"坚持"：开头亮观点，中间三个事例，结尾升华。',hint:'💡 开头"总"和结尾"总"不能重复，结尾要更深或更广。',skill:'total_divide_total'},{tag:'起承转合·叙事',title:'桂花树',text:'用起承转合写一个小故事：开头设境→展开→突然转折→收束点题。',hint:'💡 "转"是关键。前面越平静，"转"越有力。',skill:'qi_cheng_zhuan_he'},{tag:'借景·离别',title:'不说再见',text:'以"离别"为主题，只写景物，让读者从景中感受到离愁。',hint:'💡 不写"我很难过"。写天色、写车站、写那只飞走的鸟。',skill:'scene_lyric'},{tag:'托物·品格',title:'松·梅·竹',text:'选一种植物，用托物言志表达一种你认同的品格。',hint:'💡 写物即写人。竹的"虚心有节"=人的谦逊坚贞。',skill:'object_lyric'},{tag:'以景结情',title:'最后一句话',text:'写一篇短文，结尾落在景物上，让读者自己体会情绪。',hint:'💡 全文叙事，最后一句："窗外的月光静静地照进来。"',skill:'scene_ending'},{tag:'动词·场面',title:'猫捉老鼠',text:'写"猫捉老鼠"的场面，全部用精准动词，形容词不超过3个。',hint:'💡 蹿、扑、按、咬、撕——每个动作换一个动词。',skill:'verb_choice'},{tag:'叠词·雨',title:'听雨',text:'用叠词写一段关于"雨"的描写，至少使用5个叠词。',hint:'💡 淅淅沥沥、滴滴答答、哗哗啦啦、纷纷扬扬……',skill:'reduplication'},{tag:'口语·聊天',title:'跟朋友说一件事',text:'用口语化方式写"你最怕的一件事"，像跟朋友聊天。',hint:'💡 说白了、说实话、不瞒你说、你听我说——用上这些口语开头。',skill:'colloquial'},{tag:'节奏·面试',title:'等待面试',text:'写"等待面试"的场景：紧张时用短句，回忆时用长句。',hint:'💡 短句：手心出汗。腿在抖。他清了清嗓子。',skill:'rhythm_control'},
+];
+
+/* ============================================================
+   全局状态
+   ============================================================ */
+let currentPage = 'home';
+let currentPrompt = null;
+let history = JSON.parse(localStorage.getItem('writing_history') || '[]');
+let favorites = JSON.parse(localStorage.getItem('writing_favorites') || '[]');
+
+/* ============================================================
+   初始化
+   ============================================================ */
+function init() {
+  renderHome();
+  renderSkillCatTabs();
+  renderExampleCatTabs();
+  updateProfileStats();
+}
+
+/* ============================================================
+   页面导航
+   ============================================================ */
+function goPage(page, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const target = document.getElementById('page-' + page);
+  if (target) target.classList.add('active');
+  currentPage = page;
+
+  // 更新tab高亮
+  document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+  if (el) {
+    el.classList.add('active');
+  } else {
+    const tab = document.querySelector(`.tab-item[data-page="${page}"]`);
+    if (tab) tab.classList.add('active');
+  }
+
+  // 更新标题
+  const titles = {home:'墨练',skills:'技巧库',examples:'例句库',practice:'练习',history:'历史记录',profile:'我的'};
+  document.getElementById('pageTitle').textContent = titles[page] || '墨练';
+  document.getElementById('pageSub').textContent = page==='home' ? '写作技巧练习 · 68种技法' : '';
+
+  // 页面专属渲染
+  if (page === 'home') renderHome();
+  if (page === 'skills') renderSkillList('all');
+  if (page === 'examples') refreshExamples();
+  if (page === 'history') renderHistory('all');
+  if (page === 'profile') updateProfileStats();
+  if (page === 'practice') loadRandomPrompt();
+}
+
+/* ============================================================
+   首页
+   ============================================================ */
+function renderHome() {
+  // 推荐技巧（随机一个）
+  const featured = SKILLS[Math.floor(Math.random() * SKILLS.length)];
+  const icons = ['🎨','✨','🔥','💡','🎯','📝','🌊','🌿','⚡','🎭','🔮','🎪','🏆','🎲','🧩','🪄','🎸','🎺','📖','🖊️','🗣️','👁️','💬','🫧','👃','👂','💪','😊','🧠','🗨️','👤','🌆','🎬','🖼️','🔍','🎼','⏳','⬅️','📂','➕','🔀','👤','📜','🏹','❓','📐','📈','📊','🔄','🎬','🚀','🏁','🔗','❤️','🌅','🌳','📝','🎵','⚙️','📏','🔤','🎶','⏱️','🔗','💬','🎵'];
+  const colors = ['#FF6B6B','#FF8C42','#FFC53D','#34C759','#007AFF','#AF52DE','#FF2D55','#5AC8FA','#FF9500','#4CD964'];
+
+  document.getElementById('homeSkillCard').innerHTML = `
+    <div class="skill-card" onclick="showSkillDetail('${featured.id}')">
+      <div class="header">
+        <div class="icon" style="background:${colors[featured.catNo%colors.length]}22;color:${colors[featured.catNo%colors.length]}">${icons[featured.catNo-1]||'📝'}</div>
+        <div><h3>${featured.name}</h3><div class="cat">${featured.cat} · 第${featured.catNo}种</div></div>
+        <span class="arrow">›</span>
+      </div>
+      <p>${featured.sub}</p>
+    </div>`;
+
+  // 精选例句（随机3条）
+  const allEx = [];
+  SKILLS.forEach(s => s.examples.forEach(e => allEx.push({...e, skill:s.name, skillId:s.id})));
+  const shuffled = allEx.sort(() => Math.random() - 0.5).slice(0, 3);
+  document.getElementById('homeExamples').innerHTML = shuffled.map(ex => `
+    <div class="example-card" onclick="showSkillDetail('${ex.skillId}')">
+      <div class="label">${ex.label} · ${ex.skill}</div>
+      <div class="text">"${ex.text}"</div>
+      <div class="src">—— ${ex.src}</div>
+    </div>`).join('');
+
+  // 最近练习
+  const recent = history.slice(-3).reverse();
+  if (recent.length === 0) {
+    document.getElementById('homeHistory').innerHTML = `<div class="empty-state"><div class="icon">📝</div><p>还没有练习记录<br>去完成第一次练习吧！</p></div>`;
+  } else {
+    document.getElementById('homeHistory').innerHTML = recent.map(h => `
+      <div class="history-item" onclick="showHistoryDetail('${h.id}')">
+        <div class="date">${h.date}</div>
+        <div class="skill-tag">${h.skillName}</div>
+        <div class="score-badge">${h.score}分</div>
+        <div class="title">${h.title}</div>
+        <div class="preview">${h.text.slice(0, 60)}...</div>
+      </div>`).join('');
+  }
+
+  // 进度环
+  const totalPractice = history.length;
+  const pct = Math.min(Math.round((totalPractice / 68) * 100), 100);
+  document.getElementById('heroRing').textContent = pct + '%';
+}
+
+/* ============================================================
+   技巧库
+   ============================================================ */
+function renderSkillCatTabs() {
+  const cats = ['all', ...new Set(SKILLS.map(s => s.cat))];
+  const catNames = {all:'全部', '修辞':'🎨 修辞', '描写':'🔍 描写', '叙事':'📖 叙事', '结构':'🏗️ 结构', '抒情':'❤️ 抒情', '炼字':'✒️ 炼字'};
+  document.getElementById('skillCatTabs').innerHTML = cats.map(c =>
+    `<div class="cat-tab ${c==='all'?'active':''}" onclick="renderSkillList('${c}',this)">${catNames[c]||c}</div>`
+  ).join('');
+}
+
+function renderSkillList(filter, el) {
+  if (el) { document.querySelectorAll('#skillCatTabs .cat-tab').forEach(t => t.classList.remove('active')); el.classList.add('active'); }
+  const list = filter === 'all' ? SKILLS : SKILLS.filter(s => s.cat === filter);
+  document.getElementById('skillList').innerHTML = list.map(s => `
+    <div class="skill-list-item" onclick="showSkillDetail('${s.id}')">
+      <div class="num">${s.catNo}</div>
+      <div class="info">
+        <h4>${s.name}</h4>
+        <p>${s.cat} · ${s.sub}</p>
+      </div>
+      <div class="ex-count">${s.examples.length}例</div>
+    </div>`).join('');
+}
+
+/* ============================================================
+   技巧详情
+   ============================================================ */
+function showSkillDetail(id) {
+  const skill = SKILLS.find(s => s.id === id);
+  if (!skill) return;
+  const exHTML = skill.examples.map((ex,i) => `
+    <div class="example-card">
+      <div class="label">${ex.label}</div>
+      <div class="text">"${ex.text}"</div>
+      <div class="src">—— ${ex.src}</div>
+      <div class="an">💡 ${ex.an}</div>
+      <div class="actions">
+        <button class="btn-sm ${favorites.includes(ex.text)?'active':''}" onclick="toggleFav('${ex.text}',this)">${favorites.includes(ex.text)?'⭐ 已收藏':'☆ 收藏'}</button>
+        <button class="btn-sm" onclick="copyText('${ex.text.replace(/'/g,"\\'")}',this)">📋 复制</button>
+      </div>
+    </div>`).join('');
+
+  document.getElementById('skillDetailContent').innerHTML = `
+    <div class="skill-detail">
+      <h2>${skill.name}</h2>
+      <div class="cat-badge">${skill.cat} · 第${skill.catNo}种</div>
+      <p class="desc">${skill.desc}</p>
+      <div class="tip-box">
+        <div class="label">💡 练习建议</div>
+        <p>${skill.tip}</p>
+      </div>
+      <div class="tip-box" style="background:#F0F9FF;border-color:#BAE6FD">
+        <div class="label" style="color:#007AFF">📝 本页练习</div>
+        <p>${skill.practice}</p>
+      </div>
+      <a class="btn-practice" onclick="startPracticeWithSkill('${skill.id}')">✏️ 用这个技巧练习 →</a>
+    </div>
+    <div class="section-title" style="margin-top:20px"><span class="dot"></span> 经典例句（${skill.examples.length}条）</div>
+    ${exHTML}`;
+
+  goPage('skill-detail');
+}
+
+/* ============================================================
+   例句库
+   ============================================================ */
+function renderExampleCatTabs() {
+  const cats = ['all', ...new Set(SKILLS.map(s => s.cat))];
+  const catNames = {all:'全部', '修辞':'🎨 修辞', '描写':'🔍 描写', '叙事':'📖 叙事', '结构':'🏗️ 结构', '抒情':'❤️ 抒情', '炼字':'✒️ 炼字'};
+  document.getElementById('exampleCatTabs').innerHTML = cats.map(c =>
+    `<div class="cat-tab ${c==='all'?'active':''}" onclick="refreshExamples('${c}',this)">${catNames[c]||c}</div>`
+  ).join('');
+}
+
+function refreshExamples(filter, el) {
+  if (el) { document.querySelectorAll('#exampleCatTabs .cat-tab').forEach(t => t.classList.remove('active')); el.classList.add('active'); }
+  filter = filter || 'all';
+  let pool = [];
+  SKILLS.forEach(s => s.examples.forEach(e => pool.push({...e, skill:s.name, skillId:s.id, cat:s.cat})));
+  if (filter !== 'all') pool = pool.filter(e => e.cat === filter);
+  pool = pool.sort(() => Math.random() - 0.5).slice(0, 8);
+
+  document.getElementById('examplesList').innerHTML = pool.map(ex => `
+    <div class="example-card">
+      <div class="label">${ex.label} · ${ex.skill}</div>
+      <div class="text">"${ex.text}"</div>
+      <div class="src">—— ${ex.src}</div>
+      <div class="an">💡 ${ex.an}</div>
+      <div class="actions">
+        <button class="btn-sm ${favorites.includes(ex.text)?'active':''}" onclick="toggleFav('${ex.text.replace(/'/g,"\\'")}',this)">${favorites.includes(ex.text)?'⭐ 已收藏':'☆ 收藏'}</button>
+        <button class="btn-sm" onclick="copyText('${ex.text.replace(/'/g,"\\'")}',this)">📋 复制</button>
+        <button class="btn-sm" onclick="startPracticeWithSkill('${ex.skillId}')">✏️ 练习</button>
+      </div>
+    </div>`).join('');
+}
+
+/* ============================================================
+   练习
+   ============================================================ */
+function loadRandomPrompt() {
+  const p = PROMPTS[Math.floor(Math.random() * PROMPTS.length)];
+  setPrompt(p);
+}
+
+function nextPrompt() { loadRandomPrompt(); }
+
+function setPrompt(p) {
+  currentPrompt = p;
+  document.getElementById('promptTag').textContent = p.tag;
+  document.getElementById('promptTitle').textContent = p.title;
+  document.getElementById('promptText').textContent = p.text;
+  document.getElementById('promptHint').textContent = p.hint;
+  document.getElementById('writeArea').value = '';
+  updateCharCount();
+}
+
+function startPracticeWithSkill(skillId) {
+  const skill = SKILLS.find(s => s.id === skillId);
+  if (!skill) return;
+  // 找对应命题
+  const matched = PROMPTS.filter(p => p.skill === skillId);
+  const p = matched.length > 0 ? matched[Math.floor(Math.random()*matched.length)] : {tag:skill.name, title:`练习：${skill.name}`, text:skill.practice, hint:'💡 '+skill.tip, skill:skillId};
+  goPage('practice');
+  setPrompt(p);
+}
+
+function updateCharCount() {
+  const len = document.getElementById('writeArea').value.replace(/\s/g,'').length;
+  document.getElementById('charCount').textContent = len + ' 字';
+}
+
+function submitPractice() {
+  const text = document.getElementById('writeArea').value.trim();
+  if (text.length < 5) { showToast('✏️ 至少写几个字再提交哦'); return; }
+
+  const btn = document.getElementById('submitBtn');
+  btn.textContent = '批改中...';
+  btn.disabled = true;
+
+  // 模拟AI批改延迟
+  setTimeout(() => {
+    const result = aiReview(text, currentPrompt ? currentPrompt.skill : 'metaphor');
+    btn.textContent = '提交批改';
+    btn.disabled = false;
+
+    // 保存历史
+    const skill = SKILLS.find(s => s.id === (currentPrompt?currentPrompt.skill:'metaphor'));
+    const record = {
+      id: Date.now().toString(36),
+      date: new Date().toLocaleDateString('zh-CN',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}),
+      skillId: skill?skill.id:'',
+      skillName: skill?skill.name:'未知',
+      title: currentPrompt?currentPrompt.title:'自由练习',
+      text: text,
+      score: result.score,
+      feedback: result
+    };
+    history.push(record);
+    localStorage.setItem('writing_history', JSON.stringify(history));
+
+    showResult(result);
+    updateProfileStats();
+  }, 1200);
+}
+
+/* 前端AI批改引擎 */
+function aiReview(text, skillId) {
+  const skill = SKILLS.find(s => s.id === skillId);
+  const wordCount = text.replace(/\s/g,'').length;
+
+  // 检测比喻词
+  const metaphorWords = ['像','好像','如同','仿佛','是','变成','化作','犹如','宛如','似的','一样','一般'];
+  const foundMetaphors = metaphorWords.filter(w => text.includes(w));
+
+  // 检测排比
+  const sentences = text.split(/[。！？\n]/).filter(s => s.trim());
+  let parallelCount = 0;
+  for (let i = 0; i < sentences.length - 2; i++) {
+    const l1 = sentences[i].length, l2 = sentences[i+1].length, l3 = sentences[i+2].length;
+    if (Math.abs(l1-l2) < 6 && Math.abs(l2-l3) < 6 && l1 > 4) parallelCount++;
+  }
+
+  // 检测感官词
+  const sensoryWords = ['闻','听','看','摸','尝','触','嗅','声音','颜色','味道','温暖','冰冷','柔软','坚硬','香','臭','甜','苦','辣','酸'];
+  const foundSensory = sensoryWords.filter(w => text.includes(w));
+
+  // 检测拟人词
+  const personWords = ['他','她','它','它们','会','在','着','了','过'];
+  const actionWords = ['跑','跳','走','看','说','笑','哭','坐','站','躺','拿','放','推','拉','打','踢','咬','吃','喝'];
+  const foundPerson = actionWords.filter(w => text.includes(w));
+
+  // 计算分数
+  let score = 55;
+  score += Math.min(wordCount * 0.4, 20);
+  if (foundMetaphors.length > 0) score += 12;
+  if (parallelCount > 0) score += 10;
+  if (foundSensory.length >= 2) score += 8;
+  if (foundPerson.length >= 3) score += 5;
+  if (wordCount > 200) score += 5;
+  if (wordCount > 500) score += 3;
+  score = Math.min(Math.round(score), 98);
+
+  // 亮点
+  const highlights = [];
+  if (foundMetaphors.length > 0) highlights.push(`使用了"${foundMetaphors.slice(0,3).join('、')}"等比喻词，比喻意识到位`);
+  if (parallelCount > 0) highlights.push(`检测到${parallelCount}处排比结构，节奏感好`);
+  if (foundSensory.length >= 2) highlights.push(`调动了${foundSensory.length}种感官词，画面感强`);
+  if (foundPerson.length >= 3) highlights.push(`动作描写丰富（${foundPerson.length}个动作词），画面生动`);
+  if (wordCount > 150) highlights.push(`篇幅充实（${wordCount}字），有展开意识`);
+  if (highlights.length === 0) highlights.push('完成了写作任务，有表达的意愿，这是最重要的一步');
+
+  // 改进建议
+  const improvements = [];
+  if (foundMetaphors.length === 0) improvements.push('建议尝试使用比喻，让抽象感受变得可见可感');
+  if (parallelCount === 0) improvements.push('可以尝试排比句式，让文字更有节奏和气势');
+  if (foundSensory.length < 2) improvements.push('多调动感官（视觉/听觉/嗅觉/触觉），让读者身临其境');
+  if (wordCount < 80) improvements.push('字数偏少，建议展开细节，让画面更丰满');
+  if (improvements.length === 0) improvements.push('整体表现不错，下次可以尝试混合多种技巧');
+
+  // 技巧反馈
+  const skill_feedback = {};
+  if (skill) {
+    let used = false, count = 0, quality = 'none', comment = '';
+    switch(skillId) {
+      case 'metaphor': count = foundMetaphors.length; used = count > 0; quality = count>=3?'excellent':count>=1?'good':'none'; comment = used?`检测到${count}个比喻词，建议尝试博喻（多喻叠加）`:'本篇未检测到比喻，这是本次练习的核心技巧'; break;
+      case 'parallelism': count = parallelCount; used = count > 0; quality = count>=2?'excellent':count>=1?'good':'none'; comment = used?`有${count}处排比，注意每层要"递进"而非"重复"`:'排比是本次重点，尝试三个结构相似的句子并列'; break;
+      case 'sensory': count = foundSensory.length; used = count >= 2; quality = count>=4?'excellent':count>=2?'good':'none'; comment = used?`调动了${count}种感官，沉浸式写作`:'尝试同时写看到、听到、闻到什么'; break;
+      case 'personification': count = foundPerson.length; used = count >= 2; quality = count>=3?'excellent':count>=2?'good':'none'; comment = used?`使用了${count}个拟人化表达，物件活过来了`:'尝试给无生命的事物赋予人的动作和情感'; break;
+      default: used = wordCount > 50; count = wordCount; quality = used?'good':'none'; comment = skill.tip || '参考技巧说明中的练习建议';
+    }
+    skill_feedback[skillId] = {used, count, quality, comment};
+  }
+
+  // 总评
+  let overall = '';
+  if (score >= 90) overall = '非常出色！你对这项技巧的掌握已经相当成熟，可以尝试在一段文字中混合多种技巧。';
+  else if (score >= 80) overall = '写得很好，核心技巧运用到位。下一步挑战：让每个句子都比前一句更深一层。';
+  else if (score >= 70) overall = '不错的开头，能看出你在尝试。重点改进：' + improvements[0];
+  else if (score >= 60) overall = '完成了就是胜利。建议先回顾技巧说明中的例句，模仿其结构再写一遍。';
+  else overall = '勇敢迈出第一步！多看例句，先模仿再创新，下次一定会更好。';
+
+  return {score, level:score>=90?'优秀':score>=80?'良好':score>=70?'中等':score>=60?'及格':'加油', highlights, improvements, skill_feedback:skill_feedback, overall};
+}
+
+/* ============================================================
+   批改结果弹窗
+   ============================================================ */
+function showResult(r) {
+  document.getElementById('scoreCircle').textContent = r.score;
+  const colors = r.score>=90?['#34C759','#30D158']:r.score>=80?['#FF8C42','#FFA940']:r.score>=70?['#FFC53D','#FFD700']:['#FF3B30','#FF6B6B'];
+  document.getElementById('scoreCircle').style.background = `linear-gradient(135deg,${colors[0]},${colors[1]})`;
+  document.getElementById('resultLevel').textContent = `等级：${r.level}`;
+  document.getElementById('resultHighlights').innerHTML = r.highlights.map(h => `<li>${h}</li>`).join('');
+  document.getElementById('resultImprovements').innerHTML = r.improvements.map(h => `<li>${h}</li>`).join('');
+  const sf = Object.values(r.skill_feedback)[0];
+  document.getElementById('resultSkill').innerHTML = sf?`<li>${sf.comment}</li>`:'<li>继续加油</li>';
+  document.getElementById('resultOverall').textContent = r.overall;
+  document.getElementById('resultModal').classList.add('show');
+}
+
+function closeModal() { document.getElementById('resultModal').classList.remove('show'); }
+
+/* ============================================================
+   历史记录
+   ============================================================ */
+function filterHistory(type, el) {
+  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  if (el) el.classList.add('active');
+  renderHistory(type);
+}
+
+function renderHistory(type) {
+  let list = [...history].reverse();
+  const now = new Date();
+  if (type === 'week') { const weekAgo = new Date(now-7*86400000); list = list.filter(h => new Date(h.id.toString(36).replace(/^\w+/,''),36) > weekAgo); }
+  if (type === 'month') { const monthAgo = new Date(now-30*86400000); list = list.filter(h => new Date(h.id.toString(36).replace(/^\w+/,''),36) > monthAgo); }
+
+  if (list.length === 0) {
+    document.getElementById('historyList').innerHTML = `<div class="empty-state"><div class="icon">📋</div><p>暂无练习记录<br>去练习页开始写作吧！</p></div>`;
+    return;
+  }
+
+  document.getElementById('historyList').innerHTML = list.map(h => `
+    <div class="history-item" onclick="showHistoryDetail('${h.id}')">
+      <div class="date">${h.date}</div>
+      <div class="skill-tag">${h.skillName}</div>
+      <div class="score-badge">${h.score}分</div>
+      <div class="title">${h.title}</div>
+      <div class="preview">${h.text.slice(0, 80)}...</div>
+    </div>`).join('');
+}
+
+function showHistoryDetail(id) {
+  const h = history.find(x => x.id === id);
+  if (!h) return;
+  const r = h.feedback || {};
+  document.getElementById('scoreCircle').textContent = h.score;
+  const colors = h.score>=90?['#34C759','#30D158']:h.score>=80?['#FF8C42','#FFA940']:['#FFC53D','#FFD700'];
+  document.getElementById('scoreCircle').style.background = `linear-gradient(135deg,${colors[0]},${colors[1]})`;
+  document.getElementById('resultLevel').textContent = `${h.skillName} · ${h.date}`;
+  document.getElementById('resultTitle').textContent = h.title;
+  document.getElementById('resultHighlights').innerHTML = (r.highlights||['—']).map(x=>`<li>${x}</li>`).join('');
+  document.getElementById('resultImprovements').innerHTML = (r.improvements||['—']).map(x=>`<li>${x}</li>`).join('');
+  document.getElementById('resultSkill').innerHTML = (r.skill_feedback&&Object.values(r.skill_feedback)[0])?`<li>${Object.values(r.skill_feedback)[0].comment}</li>`:'<li>—</li>';
+  document.getElementById('resultOverall').textContent = (r.overall||'—');
+  // 在总评后面加上原文
+  document.getElementById('resultOverall').textContent = (r.overall||'') + '\n\n【原文】\n' + h.text;
+  document.getElementById('resultModal').classList.add('show');
+}
+
+/* ============================================================
+   我的页面
+   ============================================================ */
+function updateProfileStats() {
+  document.getElementById('statTotal').textContent = history.length;
+  const totalWords = history.reduce((sum,h) => sum + h.text.replace(/\s/g,'').length, 0);
+  document.getElementById('statWords').textContent = totalWords;
+  const uniqueSkills = new Set(history.map(h => h.skillId)).size;
+  document.getElementById('statSkills').textContent = uniqueSkills;
+  const best = history.length > 0 ? Math.max(...history.map(h => h.score)) : 0;
+  document.getElementById('statBest').textContent = best;
+}
+
+function exportData() {
+  if (history.length === 0) { showToast('暂无数据可导出'); return; }
+  const data = JSON.stringify(history, null, 2);
+  const blob = new Blob([data], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `写作练习记录_${new Date().toLocaleDateString('zh-CN').replace(/\//g,'-')}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('✅ 导出成功');
+}
+
+function clearData() {
+  if (history.length === 0) { showToast('暂无数据'); return; }
+  if (confirm('确定要清空所有练习记录吗？此操作不可恢复。')) {
+    history = [];
+    localStorage.removeItem('writing_history');
+    updateProfileStats();
+    renderHistory('all');
+    showToast('已清空');
+  }
+}
+
+/* ============================================================
+   工具函数
+   ============================================================ */
+function toggleFav(text, btn) {
+  const idx = favorites.indexOf(text);
+  if (idx >= 0) { favorites.splice(idx,1); btn.textContent = '☆ 收藏'; btn.classList.remove('active'); }
+  else { favorites.push(text); btn.textContent = '⭐ 已收藏'; btn.classList.add('active'); }
+  localStorage.setItem('writing_favorites', JSON.stringify(favorites));
+  showToast(idx>=0?'已取消收藏':'⭐ 已收藏');
+}
+
+function copyText(text, btn) {
+  if (navigator.clipboard) { navigator.clipboard.writeText(text); }
+  else {
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+  }
+  showToast('📋 已复制');
+}
+
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+/* ============================================================
+   启动
+   ============================================================ */
+init();
+</script>
+</body>
+</html>

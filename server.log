@@ -1,0 +1,9 @@
+🚀 写作练习API服务已启动: http://localhost:3000
+📖 接口文档:
+   GET  /api/skills          获取全部68种技巧
+   GET  /api/skills/:id      获取技巧详情
+   GET  /api/examples/random 随机例句 (参数: count, skill)
+   GET  /api/examples        全部例句 (参数: skill)
+   POST /api/review          AI批改 (body: text, skill_id)
+   POST /api/crawler/fetch   爬虫抓取 (body: source, skill, limit)
+   GET  /api/prompts         获取命题库

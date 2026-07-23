@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>墨练——写作技巧训练</title>
+<style>
+:root {
+  --orange: #FF8C42;
+  --orange-light: #FFF3E8;
+  --orange-lighter: #FFF9F3;
+  --orange-dark: #E6732A;
+  --green: #52C41A;
+  --green-bg: #F6FFED;
+  --blue: #1890FF;
+  --blue-bg: #E6F7FF;
+  --red: #FF4D4F;
+  --red-bg: #FFF2F0;
+  --purple: #722ED1;
+  --purple-bg: #F9F0FF;
+  --teal: #13C2C2;
+  --teal-bg: #E6FFFB;
+  --bg: #F7F8FA;
+  --card: #FFFFFF;
+  --text: #2C2C2C;
+  --gray: #666;
+  --gray2: #999;
+  --gray3: #CCC;
+  --line: #EEE;
+  --line2: #F0F0F0;
+  --shadow: 0 2px 8px rgba(0,0,0,.06);
+  --shadow-md: 0 4px 16px rgba(0,0,0,.08);
+  --r: 12px;
+  --r-lg: 16px;
+  --tab-h: 58px;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body { font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Noto Sans CJK SC',sans-serif; background:var(--bg); color:var(--text); font-size:15px; line-height:1.6; overflow:hidden; height:100vh; -webkit-font-smoothing:antialiased; }
+
+/* 页面 */
+.page { display:none; height:calc(100vh - var(--tab-h)); overflow-y:auto; -webkit-overflow-scrolling:touch; padding-bottom:20px; }
+.page.active { display:block; }
+.page::-webkit-scrollbar { display:none; }
+
+/* 导航 */
+.nav { position:sticky; top:0; z-index:100; background:var(--card); padding:11px 14px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--line); }
+.nav h1 { font-size:16px; font-weight:700; }
+.nav-btn { width:32px; height:32px; border-radius:50%; background:var(--bg); border:none; font-size:15px; color:var(--gray); display:flex; align-items:center; justify-content:center; cursor:pointer; }
+.nav-btn:active { background:var(--line); }
+
+/* TabBar */
+.tabbar { position:fixed; bottom:0; left:0; right:0; height:var(--tab-h); background:var(--card); display:flex; align-items:stretch; justify-content:space-around; border-top:1px solid var(--line); z-index:200; padding-bottom:env(safe-area-inset-bottom,0); }
+.tab { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px; cursor:pointer; color:var(--gray2); font-size:10px; font-weight:500; }
+.tab.active { color:var(--orange); }
+.tab-icon { font-size:19px; }
+.tab.active .tab-icon { transform:scale(1.08); }
+.tab-mid .tab-circle { width:42px; height:42px; border-radius:50%; background:linear-gradient(135deg,var(--orange),#FFA940); color:#fff; display:flex; align-items:center; justify-content:center; font-size:19px; margin-top:-16px; box-shadow:0 3px 10px rgba(255,140,66,.35); }
+
+/* Toast */
+.toast { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%) scale(.85); background:rgba(44,44,44,.88); color:#fff; padding:10px 18px; border-radius:8px; font-size:13px; z-index:999; opacity:0; pointer-events:none; transition:all .25s; white-space:nowrap; }
+.toast.show { opacity:1; transform:translate(-50%,-50%) scale(1); }
+
+/* 首页 */
+.hero { background:linear-gradient(155deg,#FF8C42,#FFA940 50%,#FFC53D); padding:18px 16px 22px; color:#fff; }
+.hero .hi { font-size:13px; opacity:.9; }
+.hero .title { font-size:20px; font-weight:700; margin-top:2px; }
+.hero .sub { font-size:11px; opacity:.8; margin-top:2px; }
+
+.progress-card { margin:-14px 14px 0; position:relative; z-index:10; background:var(--card); border-radius:var(--r-lg); padding:16px; box-shadow:var(--shadow-md); display:flex; align-items:center; gap:14px; }
+.ring-wrap { position:relative; width:72px; height:72px; flex-shrink:0; }
+.ring-wrap svg { transform:rotate(-90deg); }
+.ring-bg-c { fill:none; stroke:var(--line2); stroke-width:7; }
+.ring-fg-c { fill:none; stroke:var(--orange); stroke-width:7; stroke-linecap:round; transition:stroke-dashoffset .8s; }
+.ring-num { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.ring-num b { font-size:18px; color:var(--orange); }
+.ring-num small { font-size:9px; color:var(--gray2); }
+.progress-info { flex:1; font-size:12px; }
+.progress-info .pi-row { display:flex; justify-content:space-between; margin-bottom:5px; }
+.progress-info .pi-row span:first-child { color:var(--gray); }
+.progress-info .pi-row span:last-child { font-weight:600; }
+
+/* 技巧卡 */
+.section-h { display:flex; align-items:center; justify-content:space-between; padding:20px 14px 8px; }
+.section-h h3 { font-size:15px; font-weight:700; }
+.section-h a { font-size:12px; color:var(--orange); text-decoration:none; font-weight:500; }
+
+.tip-card { margin:0 14px 10px; background:var(--card); border-radius:var(--r-lg); padding:18px; box-shadow:var(--shadow); border:1px solid var(--line); }
+.tip-card .tip-tag { display:inline-flex; align-items:center; gap:3px; font-size:11px; background:var(--orange-light); color:var(--orange-dark); padding:2px 9px; border-radius:16px; font-weight:600; margin-bottom:8px; }
+.tip-card h4 { font-size:16px; font-weight:700; margin-bottom:4px; }
+.tip-card p { font-size:13px; color:var(--gray); line-height:1.7; }
+.tip-card .tip-cta { display:flex; gap:8px; margin-top:12px; }
+.btn-primary { flex:1; display:inline-flex; align-items:center; justify-content:center; gap:4px; padding:9px 14px; border-radius:8px; font-size:13px; font-weight:600; border:none; cursor:pointer; background:var(--orange); color:#fff; box-shadow:0 2px 8px rgba(255,140,66,.3); }
+.btn-primary:active { opacity:.85; }
+.btn-outline { padding:8px 12px; border-radius:8px; font-size:13px; font-weight:600; border:1.5px solid var(--orange); color:var(--orange); background:var(--card); cursor:pointer; }
+
+/* 例句卡（首页预览） */
+.ex-card { margin:0 14px 8px; background:var(--card); border-radius:var(--r); padding:13px 14px; box-shadow:0 1px 3px rgba(0,0,0,.04); border:1px solid var(--line); cursor:pointer; }
+.ex-card .ex-meta { font-size:10px; color:var(--blue); background:var(--blue-bg); padding:1px 7px; border-radius:3px; display:inline-block; margin-bottom:5px; font-weight:500; }
+.ex-card .ex-text { font-size:13px; line-height:1.7; font-style:italic; margin-bottom:3px; }
+.ex-card .ex-src { font-size:10px; color:var(--gray2); text-align:right; }
+
+/* 快捷入口 */
+.quick-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:0 14px; margin-top:4px; }
+.quick-item { background:var(--card); border-radius:var(--r); padding:12px; box-shadow:0 1px 3px rgba(0,0,0,.04); border:1px solid var(--line); display:flex; align-items:center; gap:8px; cursor:pointer; }
+.quick-item .qi-ic { width:34px; height:34px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+.quick-item span { font-size:12px; font-weight:600; }
+
+/* 技巧详情页 */
+.skill-tabs { display:flex; gap:6px; padding:10px 14px; overflow-x:auto; background:var(--card); border-bottom:1px solid var(--line); position:sticky; top:49px; z-index:50; }
+.skill-tabs::-webkit-scrollbar { display:none; }
+.skill-tab { white-space:nowrap; padding:5px 12px; border-radius:16px; font-size:12px; font-weight:500; background:var(--bg); color:var(--gray); border:1px solid var(--line); cursor:pointer; }
+.skill-tab.active { background:var(--orange); color:#fff; border-color:var(--orange); }
+
+.skill-page { padding:14px; }
+.skill-header { background:var(--card); border-radius:var(--r-lg); padding:16px; box-shadow:var(--shadow); border:1px solid var(--line); margin-bottom:12px; }
+.skill-header .sh-icon { width:42px; height:42px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:21px; margin-bottom:10px; }
+.skill-header h2 { font-size:17px; font-weight:700; margin-bottom:3px; }
+.skill-header .sh-sub { font-size:12px; color:var(--gray2); }
+.skill-header .sh-desc { font-size:13px; color:var(--gray); line-height:1.8; margin-top:10px; padding-top:10px; border-top:1px solid var(--line2); }
+
+/* 例句（技巧页内） */
+.example-block { background:var(--card); border-radius:var(--r-lg); padding:15px; box-shadow:var(--shadow); border:1px solid var(--line); margin-bottom:10px; }
+.example-block .eb-label { font-size:11px; font-weight:600; color:var(--orange); margin-bottom:5px; display:flex; align-items:center; gap:3px; }
+.example-block .eb-text { font-size:14px; line-height:1.8; margin-bottom:5px; }
+.example-block .eb-src { font-size:10px; color:var(--gray2); text-align:right; margin-bottom:6px; }
+.example-block .eb-analysis { font-size:12px; color:var(--orange-dark); background:var(--orange-lighter); padding:8px 10px; border-radius:6px; line-height:1.6; }
+.example-block .eb-actions { display:flex; gap:6px; margin-top:10px; }
+.btn-mini { font-size:11px; padding:5px 11px; border-radius:5px; border:1px solid var(--line); background:var(--card); color:var(--gray); cursor:pointer; display:flex; align-items:center; gap:3px; font-weight:500; }
+.btn-mini.active { color:var(--orange); border-color:var(--orange); background:var(--orange-light); }
+
+/* 练习提示框 */
+.practice-box { margin:12px 0; padding:12px 14px; background:var(--green-bg); border-radius:var(--r); border:1px solid #B7EB8F; }
+.practice-box .pb-label { font-size:11px; font-weight:600; color:var(--green); margin-bottom:4px; }
+.practice-box .pb-text { font-size:12px; color:#135200; line-height:1.7; }
+
+/* 例句库页 */
+.ex-filter { display:flex; gap:6px; padding:10px 14px; overflow-x:auto; background:var(--card); border-bottom:1px solid var(--line); position:sticky; top:49px; z-index:50; }
+.ex-filter::-webkit-scrollbar { display:none; }
+.ex-chip { white-space:nowrap; padding:5px 12px; border-radius:16px; font-size:12px; background:var(--bg); color:var(--gray); border:1px solid var(--line); cursor:pointer; }
+.ex-chip.active { background:var(--orange); color:#fff; border-color:var(--orange); }
+
+.ex-full { margin:10px 14px; background:var(--card); border-radius:var(--r-lg); padding:16px; box-shadow:var(--shadow); border:1px solid var(--line); }
+.ex-full .ef-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+.ex-full .ef-tag { font-size:10px; font-weight:600; padding:2px 8px; border-radius:3px; }
+.tag-metaphor { background:var(--blue-bg); color:var(--blue); }
+.tag-person { background:var(--green-bg); color:var(--green); }
+.tag-parallel { background:#FFF7E6; color:#FA8C16; }
+.tag-sensory { background:var(--purple-bg); color:var(--purple); }
+.tag-detail { background:var(--red-bg); color:var(--red); }
+.tag-contrast { background:var(--teal-bg); color:var(--teal); }
+.ex-full .ef-quote { font-size:14px; line-height:1.9; margin-bottom:8px; font-style:italic; }
+.ex-full .ef-src { font-size:11px; color:var(--gray2); margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid var(--line2); }
+.ex-full .ef-an { font-size:12px; color:var(--gray); line-height:1.7; margin-bottom:10px; }
+.ex-full .ef-acts { display:flex; gap:6px; }
+
+/* 练习页 */
+.pr-hero { background:linear-gradient(155deg,#FF8C42,#FFA940); padding:16px 14px 20px; color:#fff; border-radius:0 0 20px 20px; }
+.pr-hero .ph-tag { display:inline-block; background:rgba(255,255,255,.22); padding:2px 10px; border-radius:14px; font-size:11px; margin-bottom:6px; }
+.pr-hero h2 { font-size:18px; font-weight:700; }
+.pr-hero p { font-size:12px; opacity:.88; margin-top:2px; }
+
+.pr-body { padding:14px; }
+.prompt-box { background:var(--card); border-radius:var(--r-lg); padding:16px; box-shadow:var(--shadow); border:1px solid var(--line); margin-bottom:12px; }
+.prompt-box .pb-tag { display:inline-block; font-size:11px; background:var(--orange); color:#fff; padding:2px 9px; border-radius:3px; margin-bottom:8px; font-weight:600; }
+.prompt-box .pb-text { font-size:14px; line-height:1.8; }
+.prompt-box .pb-hint { margin-top:10px; padding:9px 11px; background:#FFFBE6; border-left:3px solid #FAAD14; font-size:12px; color:#874D00; border-radius:3px; line-height:1.6; }
+
+/* 关联技巧条 */
+.linked-bar { display:flex; align-items:center; gap:8px; background:var(--orange-lighter); border:1px solid #FFD9B8; border-radius:var(--r); padding:10px 12px; margin-bottom:12px; }
+.linked-bar .lb-ic { width:30px; height:30px; border-radius:8px; background:var(--orange); color:#fff; display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0; }
+.linked-bar .lb-text { flex:1; }
+.linked-bar .lb-text b { font-size:12px; color:var(--orange-dark); display:block; }
+.linked-bar .lb-text small { font-size:11px; color:var(--gray); }
+
+/* 编辑器 */
+.editor { background:var(--card); border-radius:var(--r-lg); padding:14px; box-shadow:var(--shadow); border:1px solid var(--line); margin-bottom:12px; }
+.editor textarea { width:100%; min-height:160px; border:none; outline:none; resize:none; font-size:14px; line-height:1.9; font-family:inherit; color:var(--text); }
+.editor textarea::placeholder { color:var(--gray3); }
+.ed-footer { display:flex; justify-content:space-between; align-items:center; margin-top:8px; padding-top:8px; border-top:1px solid var(--line2); }
+.ed-footer .wc { font-size:11px; color:var(--gray2); }
+.ed-footer .wc b { color:var(--orange); }
+
+/* 提交 */
+.btn-submit { width:100%; background:linear-gradient(135deg,var(--orange),#FFA940); color:#fff; border:none; padding:12px; border-radius:var(--r); font-size:15px; font-weight:700; cursor:pointer; box-shadow:0 3px 12px rgba(255,140,66,.35); letter-spacing:1px; }
+.btn-submit:active { transform:scale(.98); }
+
+/* 批改弹窗 */
+.overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.42); z-index:300; align-items:flex-end; justify-content:center; }
+.overlay.show { display:flex; }
+.sheet { background:var(--card); width:100%; max-height:76vh; border-radius:20px 20px 0 0; padding:20px 18px; overflow-y:auto; animation:slideUp .3s; }
+.sheet::-webkit-scrollbar { display:none; }
+@keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+.sheet .rs-head { text-align:center; margin-bottom:16px; }
+.sheet .rs-head h3 { font-size:16px; font-weight:700; }
+.sheet .rs-head p { font-size:11px; color:var(--gray2); }
+
+.score-wrap { width:90px; height:90px; margin:0 auto 16px; position:relative; }
+.score-wrap svg { transform:rotate(-90deg); }
+.sc-bg { fill:none; stroke:var(--line2); stroke-width:7; }
+.sc-fg { fill:none; stroke:var(--orange); stroke-width:7; stroke-linecap:round; }
+.sc-text { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.sc-text b { font-size:26px; color:var(--orange); }
+.sc-text small { font-size:10px; color:var(--gray2); }
+
+.fb-item { padding:12px 0; border-bottom:1px solid var(--line2); }
+.fb-item:last-of-type { border-bottom:none; }
+.fb-label { font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.5px; margin-bottom:4px; }
+.fb-label.ok { color:var(--green); }
+.fb-label.warn { color:var(--orange); }
+.fb-label.bad { color:var(--red); }
+.fb-val { font-size:13px; line-height:1.7; }
+
+/* 历史页 */
+.hf-bar { display:flex; gap:6px; padding:10px 14px; background:var(--card); border-bottom:1px solid var(--line); position:sticky; top:49px; z-index:50; }
+.h-item { margin:8px 14px; background:var(--card); border-radius:var(--r-lg); padding:14px; box-shadow:0 1px 3px rgba(0,0,0,.04); border:1px solid var(--line); cursor:pointer; }
+.h-item:active { transform:scale(.98); }
+.h-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+.h-date { font-size:11px; color:var(--gray2); }
+.h-score { font-size:11px; font-weight:700; padding:2px 8px; border-radius:12px; }
+.h-score.h { background:var(--green-bg); color:var(--green); }
+.h-score.m { background:#FFF7E6; color:#FA8C16; }
+.h-score.l { background:var(--red-bg); color:var(--red); }
+.h-title { font-size:14px; font-weight:600; margin-bottom:3px; }
+.h-prev { font-size:11px; color:var(--gray); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; line-height:1.6; }
+.h-tags { margin-top:6px; display:flex; gap:4px; flex-wrap:wrap; }
+.h-tag { font-size:9px; padding:1px 6px; border-radius:2px; }
+
+/* 历史详情 */
+.hd-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.38); z-index:300; align-items:center; justify-content:center; }
+.hd-overlay.show { display:flex; }
+.hd-modal { background:var(--card); width:92%; max-height:80vh; border-radius:var(--r-lg); padding:20px 18px; overflow-y:auto; }
+.hd-modal::-webkit-scrollbar { display:none; }
+.hd-close { float:right; background:var(--bg); border:none; width:28px; height:28px; border-radius:50%; font-size:14px; cursor:pointer; color:var(--gray2); }
+.hd-title { font-size:16px; font-weight:700; margin-bottom:4px; }
+.hd-meta { font-size:11px; color:var(--gray2); margin-bottom:14px; }
+.hd-lbl { font-size:11px; font-weight:600; color:var(--orange); margin:12px 0 5px; }
+.hd-box { background:var(--bg); padding:10px 12px; border-radius:7px; font-size:12px; line-height:1.8; white-space:pre-wrap; }
+
+/* 我的 */
+.profile-hero { background:linear-gradient(155deg,#FF8C42,#FFA940); padding:28px 16px 24px; color:#fff; text-align:center; }
+.p-avatar { width:58px; height:58px; border-radius:50%; background:rgba(255,255,255,.22); display:flex; align-items:center; justify-content:center; font-size:26px; margin:0 auto 8px; border:2px solid rgba(255,255,255,.45); }
+.profile-hero h2 { font-size:17px; font-weight:700; }
+.profile-hero p { font-size:12px; opacity:.88; margin-top:2px; }
+
+.stats4 { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; padding:12px 14px; margin-top:-12px; position:relative; z-index:10; }
+.s4 { background:var(--card); border-radius:var(--r); padding:12px 6px; text-align:center; box-shadow:var(--shadow); border:1px solid var(--line); }
+.s4 b { font-size:18px; color:var(--orange); display:block; }
+.s4 small { font-size:10px; color:var(--gray2); }
+
+.menu-list { padding:6px 14px; }
+.menu-item { display:flex; align-items:center; gap:10px; padding:12px 14px; background:var(--card); border-radius:var(--r); margin-bottom:6px; box-shadow:0 1px 3px rgba(0,0,0,.04); border:1px solid var(--line); cursor:pointer; }
+.menu-item .mi-ic { width:32px; height:32px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:15px; }
+.menu-item span { flex:1; font-size:13px; font-weight:500; }
+.menu-item .mi-ar { color:var(--gray3); font-size:15px; }
+</style>
+</head>
+<body>
+
+<!-- 首页 -->
+<div class="page active" id="p-home">
+  <div class="nav"><h1>墨练</h1><button class="nav-btn" onclick="showToast('🔔 暂无新通知')">🔔</button></div>
+  <div class="hero">
+    <div class="hi">下午好 👋</div>
+    <div class="title">坚持第 12 天</div>
+    <div class="sub">再坚持 9 天解锁「笔耕不辍」徽章</div>
+  </div>
+  <div class="progress-card">
+    <div class="ring-wrap">
+      <svg width="72" height="72"><circle class="ring-bg-c" cx="36" cy="36" r="30"/><circle class="ring-fg-c" cx="36" cy="36" r="30" stroke-dasharray="188.5" stroke-dashoffset="56.5"/></svg>
+      <div class="ring-num"><b>70%</b><small>今日</small></div>
+    </div>
+    <div class="progress-info">
+      <div class="pi-row"><span>今日练习</span><span>2 / 3 篇</span></div>
+      <div class="pi-row"><span>本周技巧</span><span>4 / 6 个</span></div>
+      <div class="pi-row"><span>累计写作</span><span>8,650 字</span></div>
+    </div>
+  </div>
+
+  <div class="section-h"><h3>📖 今日技巧</h3><a onclick="go('skills')">技巧库 →</a></div>
+  <div class="tip-card" id="homeTip"></div>
+
+  <div class="section-h"><h3>💎 精读例句</h3><a onclick="go('examples')">全部 →</a></div>
+  <div id="homeEx"></div>
+
+  <div class="section-h"><h3>🚀 快速开始</h3></div>
+  <div class="quick-row">
+    <div class="quick-item" onclick="go('practice')"><div class="qi-ic" style="background:var(--orange-light);">✏️</div><span>跟随练习</span></div>
+    <div class="quick-item" onclick="go('history')"><div class="qi-ic" style="background:var(--blue-bg);">📂</div><span>历史回看</span></div>
+    <div class="quick-item" onclick="showToast('📊 学习报告开发中')"><div class="qi-ic" style="background:var(--green-bg);">📈</div><span>学习报告</span></div>
+    <div class="quick-item" onclick="showToast('🏆 已获3枚徽章')"><div class="qi-ic" style="background:var(--purple-bg);">🏅</div><span>我的徽章</span></div>
+  </div>
+</div>
+
+<!-- 技巧详情页 -->
+<div class="page" id="p-skills">
+  <div class="nav"><button class="nav-btn" onclick="go('home')">←</button><h1>写作技巧</h1><button class="nav-btn" onclick="showToast('🔍 搜索开发中')">🔍</button></div>
+  <div class="skill-tabs" id="skillTabs"></div>
+  <div class="skill-page" id="skillPage"></div>
+</div>
+
+<!-- 例句库页 -->
+<div class="page" id="p-examples">
+  <div class="nav"><button class="nav-btn" onclick="go('home')">←</button><h1>精读例句</h1><button class="nav-btn" onclick="showToast('⭐ 收藏为空')">⭐</button></div>
+  <div class="ex-filter" id="exFilter"></div>
+  <div id="exList"></div>
+</div>
+
+<!-- 练习页 -->
+<div class="page" id="p-practice">
+  <div class="pr-hero">
+    <button class="nav-btn" style="background:rgba(255,255,255,.18);color:#fff;width:28px;height:28px;font-size:13px;float:right;" onclick="go('home')">✕</button>
+    <div class="ph-tag" id="prTag">🎯 场景描写</div>
+    <h2 id="prTitle">跟随练习</h2>
+    <p>学一个技巧 → 看例句 → 马上练</p>
+  </div>
+  <div class="pr-body">
+    <div class="prompt-box">
+      <span class="pb-tag" id="pbTag">命题</span>
+      <div class="pb-text" id="pbText"></div>
+      <div class="pb-hint" id="pbHint"></div>
+    </div>
+    <div class="linked-bar" id="linkedBar"></div>
+    <div class="editor">
+      <textarea id="editor" placeholder="开始写作……&#10;&#10;💡 注意运用今日技巧"></textarea>
+      <div class="ed-footer">
+        <span class="wc"><b id="wc">0</b> / 150 字</span>
+        <span style="font-size:10px;color:var(--gray2);" id="skillRem"></span>
+      </div>
+    </div>
+    <button class="btn-submit" onclick="submitWrite()">提交批改 →</button>
+  </div>
+</div>
+
+<!-- 批改弹窗 -->
+<div class="overlay" id="rsOverlay">
+  <div class="sheet">
+    <div class="rs-head"><h3>✅ 批改完成</h3><p>基于写作技巧多维度评估</p></div>
+    <div class="score-wrap">
+      <svg width="90" height="90"><circle class="sc-bg" cx="45" cy="45" r="38"/><circle class="sc-fg" cx="45" cy="45" r="38" stroke-dasharray="238.8" stroke-dashoffset="47.8" id="scRing"/></svg>
+      <div class="sc-text"><b id="scNum">85</b><small>综合评分</small></div>
+    </div>
+    <div class="fb-item"><div class="fb-label ok">✓ 亮点</div><div class="fb-val" id="fbGood"></div></div>
+    <div class="fb-item"><div class="fb-label warn">⚡ 改进</div><div class="fb-val" id="fbWarn"></div></div>
+    <div class="fb-item"><div class="fb-label bad">📌 技巧</div><div class="fb-val" id="fbSkill"></div></div>
+    <div class="fb-item"><div class="fb-label">📝 总评</div><div class="fb-val" id="fbAll"></div></div>
+    <button class="btn-primary" style="width:100%;margin-top:14px;" onclick="closeRs()">继续练习</button>
+    <button class="btn-mini" style="width:100%;margin-top:8px;justify-content:center;border:none;background:var(--bg);" onclick="closeRs();go('history')">查看历史 →</button>
+  </div>
+</div>
+
+<!-- 历史页 -->
+<div class="page" id="p-history">
+  <div class="nav"><button class="nav-btn" onclick="go('home')">←</button><h1>练习历史</h1><button class="nav-btn" onclick="showToast('🗑️ 长按可删除')">⋯</button></div>
+  <div class="hf-bar">
+    <span class="ex-chip active" onclick="fHist('all',this)">全部</span>
+    <span class="ex-chip" onclick="fHist('week',this)">本周</span>
+    <span class="ex-chip" onclick="fHist('high',this)">高分</span>
+  </div>
+  <div id="hList"></div>
+</div>
+
+<!-- 我的 -->
+<div class="page" id="p-profile">
+  <div class="profile-hero">
+    <div class="p-avatar">📝</div>
+    <h2>小墨同学</h2>
+    <p>Lv.5 进阶写手 · 连续打卡 12 天</p>
+  </div>
+  <div class="stats4">
+    <div class="s4"><b>47</b><small>累计练习</small></div>
+    <div class="s4"><b>12</b><small>连续打卡</small></div>
+    <div class="s4"><b>86</b><small>平均分</small></div>
+    <div class="s4"><b>3</b><small>徽章</small></div>
+  </div>
+  <div class="menu-list">
+    <div class="menu-item" onclick="showToast('📊 报告开发中')"><div class="mi-ic" style="background:var(--orange-light);">📈</div><span>学习报告</span><span class="mi-ar">›</span></div>
+    <div class="menu-item" onclick="showToast('🏆 查看徽章')"><div class="mi-ic" style="background:var(--purple-bg);">🏅</div><span>我的徽章</span><span class="mi-ar">›</span></div>
+    <div class="menu-item" onclick="showToast('⚙️ 设置开发中')"><div class="mi-ic" style="background:var(--green-bg);">⚙️</div><span>设置</span><span class="mi-ar">›</span></div>
+    <div class="menu-item" onclick="showToast('💬 谢谢反馈')"><div class="mi-ic" style="background:var(--red-bg);">💬</div><span>意见反馈</span><span class="mi-ar">›</span></div>
+  </div>
+</div>
+
+<!-- TabBar -->
+<div class="tabbar">
+  <div class="tab active" data-p="home" onclick="go('home')"><span class="tab-icon">🏠</span><span>首页</span></div>
+  <div class="tab" data-p="skills" onclick="go('skills')"><span class="tab-icon">📚</span><span>技巧</span></div>
+  <div class="tab tab-mid" data-p="practice" onclick="go('practice')"><span class="tab-circle">✏️</span></div>
+  <div class="tab" data-p="examples" onclick="go('examples')"><span class="tab-icon">💎</span><span>例句</span></div>
+  <div class="tab" data-p="history" onclick="go('history')"><span class="tab-icon">📂</span><span>历史</span></div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="hd-overlay" id="hdOverlay">
+  <div class="hd-modal" onclick="event.stopPropagation()">
+    <button class="hd-close" onclick="closeHd()">✕</button>
+    <div class="hd-title" id="hdT"></div>
+    <div class="hd-meta" id="hdM"></div>
+    <div class="hd-lbl">📋 命题</div><div class="hd-box" id="hdP"></div>
+    <div class="hd-lbl">✍️ 我的写作</div><div class="hd-box" id="hdC"></div>
+    <div class="hd-lbl">📝 反馈</div><div class="hd-box" id="hdF"></div>
+  </div>
+</div>
+
+<script>
+/* ============ 技巧数据库 ============ */
+const SKILLS = [
+  {
+    id:'metaphor', name:'比喻', icon:'🔵', bg:'#E6F7FF', color:'#1890FF',
+    sub:'让抽象变具体，让陌生变熟悉',
+    desc:'比喻用本质不同但有相似点的事物来描绘另一事物。分为明喻（如/像/似）、暗喻（是/成为）和借喻。好的比喻能激活读者的感官记忆，一击即中。',
+    examples:[
+      { label:'明喻·散文', text:'叶子出水很高，像亭亭的舞女的裙。', src:'朱自清《荷塘月色》', an:'"像"连接荷叶与舞女裙，"亭亭"让静态荷叶有了动态美感。' },
+      { label:'暗喻·诗歌', text:'乡愁是一枚小小的邮票，我在这头，母亲在那头。', src:'余光中《乡愁》', an:'乡愁化为可触摸的"邮票"，四段层层推进，从小我到大时代。' },
+      { label:'博喻·诗词', text:'试问闲愁都几许？一川烟草，满城风絮，梅子黄时雨。', src:'贺铸《青玉案》', an:'三个喻体叠加形容同一种情绪，从视觉到触觉，愁绪变得可触可感。博喻的巅峰。' },
+      { label:'暗喻·现代诗', text:'月光如流水一般，静静地泻在这一片叶子和花上。', src:'朱自清《荷塘月色》', an:'"如流水"与"泻"配合，月光有了重量和流动感。' },
+      { label:'借喻·诗歌', text:'忽如一夜春风来，千树万树梨花开。', src:'岑参《白雪歌送武判官归京》', an:'以暖喻寒的巅峰——用梨花喻塞北暴雪，冷景写出暖意。' },
+      { label:'明喻·古典', text:'不知细叶谁裁出，二月春风似剪刀。', src:'贺知章《咏柳》', an:'无形春风化为有形剪刀，童趣与巧思并存。' },
+      { label:'暗喻·现代', text:'生命是一袭华美的袍，爬满了蚤子。', src:'张爱玲《天才梦》', an:'将人生喻为华袍与蚤子的矛盾体，道尽生命的美与不堪。' },
+      { label:'暗喻·诗歌', text:'我是你河边上破旧的老水车，数百年来纺着疲惫的歌。', src:'舒婷《祖国啊，我亲爱的祖国》', an:'"是"直接等同，"老水车"暗喻一代人的沧桑。' },
+      { label:'明喻·散文', text:'雨如牛毛，如花针，如细丝，密密地斜织着。', src:'朱自清《春》', an:'博喻写春雨，牛毛（细密）、花针（晶亮）、细丝（绵柔）三个角度合一。' },
+      { label:'暗喻·小说', text:'那饭菜，简直是人肉的筵宴。', src:'鲁迅《灯下漫笔》', an:'将旧中国文明比作人肉筵宴，惊世骇俗，力透纸背。' },
+      { label:'明喻·诗歌', text:'问君能有几多愁？恰似一江春水向东流。', src:'李煜《虞美人》', an:'以水喻愁，千古写愁第一喻。' },
+      { label:'暗喻·现代', text:'我的心是七层塔檐上悬挂的风铃，叮咛叮咛咛。', src:'余光中《风铃》', an:'心=风铃，物与情交融，拟音词极具音律美。' },
+    ],
+    tip:'先确定要表达的"感受"，再找生活中与之有相似质感的具体事物。避免"时间像流水"这种陈词滥调。',
+    practice:'写一段关于"焦虑"或"期待"的感受，用比喻让读者"看到"这种情绪。至少用1个明喻或暗喻，150字以上。'
+  },
+  {
+    id:'person', name:'拟人', icon:'🟢', bg:'#F6FFED', color:'#52C41A',
+    sub:'给万物赋予灵魂，让世界活起来',
+    desc:'拟人将事物人格化，赋予它们人的动作、情感和意志。它让描写从"客观记录"变为"生命对话"，读者会不由自主地产生情感投射。',
+    examples:[
+      { label:'拟人·散文', text:'桃树、杏树、梨树，你不让我，我不让你，都开满了花赶趟儿。', src:'朱自清《春》', an:'花树被赋予人的竞争心理，"赶趟儿"更添市井烟火气。' },
+      { label:'拟人·诗歌', text:'感时花溅泪，恨别鸟惊心。', src:'杜甫《春望》', an:'花在流泪，鸟在惊心——诗人的情感投射到万物之上，有我之境。' },
+      { label:'拟人·歌词', text:'风在唱着歌，唤醒了沉睡的田野。', src:'李健《风吹麦浪》', an:'风会唱歌，田野会沉睡，自然有了生命节律。' },
+      { label:'拟人·小说', text:'夜仿佛纸浸了油，变成半透明体，它给太阳拥抱住了。', src:'钱钟书《围城》', an:'夜被拟人化为可"拥抱"的对象，比喻与拟人浑然一体。' },
+      { label:'拟人·散文', text:'这雨愈下愈老成，水点贯串作丝。', src:'钱钟书《围城》', an: '"老成"用在雨上，雨有了人的性格与年龄感。' },
+      { label:'拟人·小说', text:'猫阴恻恻地忽然一笑，像只刚吞下个金丝雀的猫。', src:'张爱玲《谈吃与画饼充饥》', an:'猫被赋予人的表情，"阴恻恻一笑"令人毛骨悚然。' },
+      { label:'拟人·散文', text:'曲曲折折的荷塘上面，弥望的是田田的叶子。', src:'朱自清《荷塘月色》', an:'"弥望"赋予荷叶以主动铺展的生命力。' },
+      { label:'拟人·诗歌', text:'羌笛何须怨杨柳，春风不度玉门关。', src:'王之涣《凉州词》', an:'羌笛"怨"，春风"不度"，物象有了人的情绪与意志。' },
+    ],
+    tip:'选一个你每天接触但从不注意的物件，给它一种"情绪"，用三个动作让它活过来。',
+    practice:'描写一个"清晨的房间"（无人状态），让房间里的物件"醒来"并各忙各的。150字以上，至少3个拟人句。'
+  },
+  {
+    id:'parallel', name:'排比', icon:'🟠', bg:'#FFF7E6', color:'#FA8C16',
+    sub:'三连击的力量，让文字有节奏有气势',
+    desc:'排比用三个及以上结构相似、语气一致的短语或句子并列，形成节奏感和递进气势。它是演讲、抒情和议论中的"加速器"。',
+    examples:[
+      { label:'排比·散文', text:'春天像刚落地的娃娃，从头到脚都是新的；像小姑娘，花枝招展的；像健壮的青年，领着我们上前去。', src:'朱自清《春》', an:'以人的三个阶段作喻体描写春天，层递推进，从新生到壮美。' },
+      { label:'排比·诗歌', text:'大漠孤烟直，长河落日圆。萧关逢候骑，都护在燕然。', src:'王维《使至塞上》', an:'对仗构成排比感，空间从水平到垂直铺开，宏大而不杂乱。' },
+      { label:'排比·演讲', text:'让自由之声从新罕布什尔州的峰巅响起来！从纽约州的崇山峻岭响起来！从宾夕法尼亚州阿勒格尼山响起来！', src:'马丁·路德·金《我有一个梦想》', an:'三个"让自由之声从……响起来"层层推进，声浪般的气势。' },
+      { label:'排比·散文', text:'燕子去了有再来的时候；杨柳枯了有再青的时候；桃花谢了有再开的时候。', src:'朱自清《匆匆》', an:'三个"……了，有再……的时候"结构，为后文"时间一去不返"蓄势。' },
+      { label:'排比·散文', text:'雅量，是一种修养，是一种智慧，是一种境界。', src:'余光中《论读书》风格', an:'三个"是一种"层层递进，从修养到智慧到境界，排比中暗含升华。' },
+      { label:'排比·歌词', text:'我爱你，爱着你，就像老鼠爱大米。', src:'杨臣刚《老鼠爱大米》', an:'"爱"三次重复形成节奏锁定，出人意料的喻体制造记忆点。' },
+    ],
+    tip:'排比的关键是"渐强"——每句都比前一句更进一步。避免平铺，要让读者读到第三句时有"被推了一把"的感觉。',
+    practice:'以"母亲的手"或"父亲的话"为主题，用排比写三段，每段从不同的感官或场景切入。150字以上。'
+  },
+  {
+    id:'sensory', name:'感官描写', icon:'🩷', bg:'#F9F0FF', color:'#722ED1',
+    sub:'五感联动，让读者身临其境',
+    desc:'感官描写同时调动视觉、听觉、嗅觉、味觉、触觉。人类80%靠视觉，但记忆最深的是气味和触感。多感官交织，文字就有了沉浸感。',
+    examples:[
+      { label:'感官·小说', text:'空气中弥漫着栀子花的香气，黏稠得像化开的奶油，阳光照在皮肤上，有一种轻微的、持续的刺痛。', src:'村上春树《挪威的森林》', an:'嗅觉→触觉→温度，感官叠加营造"此刻感"。' },
+      { label:'味觉·散文', text:'西瓜以绳络悬于井中，下午剖食，一刀下去，咔嚓有声，凉气四溢，连眼睛都是凉的。', src:'汪曾祺《人间草木》', an:'听觉（咔嚓）+触觉（凉气）+通感（眼睛是凉的），一个西瓜写活了。' },
+      { label:'味觉·散文', text:'端午的鸭蛋，筷子头一扎下去，吱——红油就冒出来了。', src:'汪曾祺《端午的鸭蛋》', an:'拟声词"吱"激活了听觉，让味觉有了声音维度。' },
+      { label:'嗅觉·小说', text:'从路两边高粱地里飘来薄荷的幽淡气息和高粱苦涩微甘的气味。', src:'莫言《红高粱家族》', an:'"幽淡"形容薄荷气息，"苦涩微甘"形容高粱气味，嗅觉精准如仪器。' },
+      { label:'通感·小说', text:'万物都会吐出人血的味道。', src:'莫言《红高粱家族》', an:'视觉的"血红"转化为嗅觉的"腥甜"，通感的极致。' },
+      { label:'感官·散文', text:'一箸入口，三春不忘。', src:'汪曾祺《五味》', an:'味觉→记忆→时间，四个字写尽美食的持久影响力。' },
+      { label:'嗅觉·小说', text:'那股弥漫田野的腥甜味浸透了我父亲的灵魂。', src:'莫言《红高粱家族》', an:'气味不仅有空间（弥漫），还有时间持续性（浸透灵魂）。' },
+    ],
+    tip:'写一个你熟悉的地方，至少用到三种感官。先列清单：看到什么？听到什么？闻到什么？摸到什么？然后编织进文字。',
+    practice:'描写"外婆的厨房"或"雨后的操场"，至少调动三种感官。150字以上，让读者"进入"那个空间。'
+  },
+  {
+    id:'detail', name:'细节描写', icon:'🔴', bg:'#FFF2F0', color:'#FF4D4F',
+    sub:'以小见大，一个动作胜过千言万语',
+    desc:'细节描写捕捉微小的动作、表情、物件来传递深层情感。它是"冰山理论"的实践——水面下的八分之七，靠一个细节就能让人感知到。',
+    examples:[
+      { label:'细节·小说', text:'他咬着牙，把拳头攥得咯咯响，但最后只是松开手，拍了拍对方的肩膀。', src:'路遥《平凡的世界》', an:'"攥拳头"到"拍肩膀"的转变，一个细节写出隐忍与善良。' },
+      { label:'细节·散文', text:'父亲的背影混入来来往往的人里，再找不着了。', src:'朱自清《背影》', an:'全篇围绕"背影消失"展开，中国式父爱的经典表达。' },
+      { label:'细节·散文', text:'她视力不好，端着眼镜像在寻找海上的一条船。', src:'史铁生《我与地坛》', an:'"端着眼镜找船"——母爱被具象为一个动作，催人泪下。' },
+      { label:'细节·散文', text:'有过我的车辙的地方，也都有过母亲的脚印。', src:'史铁生《我与地坛》', an:'车辙+脚印，两个细节道尽母子关系的全部重量。' },
+      { label:'细节·小说', text:'老栓看见一堆人的后背；颈项都伸得很长，仿佛许多鸭，被无形的手捏住了，向上提着。', src:'鲁迅《药》', an:'看客的脖子被比作"被提的鸭子"，麻木与残忍尽在不言中。' },
+      { label:'细节·小说', text:'翠翠的脸还发着烧不便做声，心想："黄狗跑到什么地方去了呢？"', src:'沈从文《边城》', an:'少女心事不直接写，用一个"想黄狗"的细节侧面透露。' },
+      { label:'细节·散文', text:'母亲仍站在原地，还是送我走时的姿势，望着我拐出小院去的那处墙角。', src:'史铁生《我与地坛》', an:'"站原地的母亲"——一个静态细节，胜过千言万语。' },
+    ],
+    tip:'选一个你爱的人，写一个关于TA的"微习惯"或"小物件"，不超过100字，但要让读者感受到情感。',
+    practice:'描写"爷爷的手"或"母亲的某个习惯性动作"，100字以上，不写"爱"字，但让读者感受到爱。'
+  },
+  {
+    id:'contrast', name:'对比衬托', icon:'🔵', bg:'#E6FFFB', color:'#13C2C2',
+    sub:'以暗衬明，让主题自己跳出来',
+    desc:'对比将相反或相对的事物放在一起，以突出一方。可以是横向（A vs B）、纵向（过去 vs 现在），或反衬（热闹衬孤独）。',
+    examples:[
+      { label:'反衬·诗歌', text:'蝉噪林逾静，鸟鸣山更幽。', src:'王籍《入若耶溪》', an:'以有声衬无声，以动衬静。反向强化的巅峰。' },
+      { label:'对比·诗歌', text:'从前车马很慢，书信很远，一生只够爱一个人。', src:'木心《从前慢》', an:'用"慢"对比现代"快"，温柔的怀念让人感受变迁的代价。' },
+      { label:'对比·诗歌', text:'去年今日此门中，人面桃花相映红。人面不知何处去，桃花依旧笑春风。', src:'崔护《题都城南庄》', an:'"人面"与"桃花"对比，去年与今年对比。桃花"依旧笑"反衬人事已非。' },
+      { label:'对比·歌词', text:'得到的越看越轻，来弥补未得到的贪心。', src:'陈奕迅《红玫瑰》', an:'"得到"与"未得到"对比，一轻一重道尽人性矛盾。' },
+      { label:'对比·小说', text:'两面都已埋到层层迭迭，宛然阔人家里祝寿的馒头。', src:'鲁迅《药》', an:'穷人坟墓比作阔人馒头，反讽中暗含对阶级压迫的控诉。' },
+      { label:'对比·散文', text:'黄油饼是甜的，混着的眼泪是咸的，就像人生。', src:'汪曾祺《食事》', an:'甜与咸的对比，味觉即人生。' },
+    ],
+    tip:'写两个画面：一个热闹的，一个安静的。放在一起不加评论，让读者自己感受反差。',
+    practice:'以"一张旧照片"为线索，用对比手法写"过去"和"现在"两段画面。150字以上。'
+  },
+];
+
+/* ============ 例句库（扁平化，用于例句页） ============ */
+const ALL_EX = (() => {
+  const list = [];
+  SKILLS.forEach(s => s.examples.forEach(ex => list.push({...ex, skill:s.id, skillName:s.name})));
+  return list;
+})();
+
+/* ============ 命题库 ============ */
+const PROMPTS = [
+  { tag:'比喻·场景', title:'雨后的老巷子', text:'请以"雨后的老巷子"为题，写150字以上。至少用1个比喻（明喻或暗喻），并调动至少两种感官。', hint:'💡 想想水洼的倒影像什么？墙角的苔藓摸起来什么感觉？', skill:'metaphor' },
+  { tag:'拟人·人物', title:'生气的TA', text:'描写一个你熟悉的人"生气时的样子"，150字以上。抓住细节动作和神态，不直接写"他很生气"。', hint:'💡 不一定暴怒——压抑的愤怒更有张力。注意眉头、嘴角、手指……', skill:'person' },
+  { tag:'比喻·情感', title:'离家', text:'以"离家"为主题写150字以上。不直接说"我伤心"，用比喻和景物承载情感。', hint:'💡 参考贺铸"一川烟草"的博喻方式，或朱自清"背影"的细节聚焦。', skill:'metaphor' },
+  { tag:'排比·议论', title:'慢生活', text:'谈谈你对"慢生活"的理解，200字左右。有明确观点，用排比句式增强说服力。', hint:'💡 先亮观点再展开。可以借鉴"燕子去了/杨柳枯了/桃花谢了"的排比节奏。', skill:'parallel' },
+  { tag:'拟人·场景', title:'深夜书房', text:'描写深夜写作/读书的场景，150字以上。让房间里的物件"活"起来。', hint:'💡 台灯、书本、茶杯、钟表……选两三个赋予人的状态。', skill:'person' },
+  { tag:'感官·记忆', title:'夏天的记忆', text:'写一段关于"夏天"的记忆，150字以上。至少调动三种感官。', hint:'💡 参考汪曾祺写西瓜"连眼睛都是凉的"的通感手法。', skill:'sensory' },
+  { tag:'细节·人物', title:'爷爷的手', text:'描写爷爷（或任何长辈）的一双手，100字以上。聚焦细节，不写"爱"字但让人感受到爱。', hint:'💡 手上的皱纹、茧子、某个习惯性小动作……一个细节胜过千言。', skill:'detail' },
+  { tag:'对比·时间', title:'一张旧照片', text:'以"一张旧照片"为线索，用对比手法写"过去"和"现在"两段画面，150字以上。', hint:'💡 照片里的笑 vs 现在的沉默；照片里的满头黑发 vs 现在的白发……', skill:'contrast' },
+  { tag:'感官·地方', title:'外婆的厨房', text:'描写外婆的厨房（或任何你熟悉的厨房），150字以上。至少三种感官。', hint:'💡 油烟味、锅铲声、灶台的触感……汪曾祺说"一箸入口，三春不忘"。', skill:'sensory' },
+  { tag:'拟人·自然', title:'冬天的早晨', text:'写一段"冬天的早晨"，150字以上。把天气现象拟人化——风、雪、树、窗户都可以"活"起来。', hint:'💡 参考钱钟书"雨愈下愈老成"的写法，给自然现象赋予性格。', skill:'person' },
+];
+
+/* ============ 历史 ============ */
+let HISTORY = [
+  { id:1, date:'2026-07-22', score:88, title:'雨后的老巷子', skill:'比喻', prompt:'请以"雨后的老巷子"为题……', content:'雨停了，青石板路积着浅浅水洼，每一洼倒映着灰瓦白墙，像大地碎了的镜子。墙角苔藓吸饱了水，绿得要滴下来，摸上去凉丝丝的。空气混着泥土和樟树叶的味道，深吸一口，整个肺都醒了。花猫从屋檐跳下，踩过水洼，溅起的水珠像碎了的星星。远处谁家窗里飘出饭菜香，把整条巷子泡得软软的、暖暖的。', fb:'多感官描写出色（视觉/触觉/嗅觉），"碎了的镜子"比喻新颖。结尾可加一句情感升华。', tags:['比喻','感官'] },
+  { id:2, date:'2026-07-21', score:76, title:'生气的父亲', skill:'细节', prompt:'描写一个你熟悉的人"生气时的样子"……', content:'我爸生气时不说话，就是盯着你看。眉毛皱成"川"字，茶杯放下比平时重一点但不会摔。偶尔叹一口气，很长很慢，好像把失望全装进去了。家里特别安静，连钟表滴答都听得见。我妈在厨房故意把锅铲弄得很响，想打破沉默，但没什么用。', fb:'细节捕捉精准（放茶杯力度、叹气），"川字眉"生动。可加入一个关键动作特写提升冲击力。', tags:['细节'] },
+  { id:3, date:'2026-07-20', score:92, title:'第一次离家', skill:'比喻/对比', prompt:'以"离家"为主题……', content:'火车启动那一刻我没回头。站台上的母亲还站在原地，手搭额前张望——去年她来送我还能一路小跑到站台，今年却只能站在原地了。窗外婆娑的景色开始流动，小城轮廓一点点缩小，像橡皮擦慢慢抹去我二十年的记忆。她往我包里塞了一袋橘子，说"路上吃"。那袋橘子在异乡铁轨上颠簸，带着家里的味道。', fb:'"橡皮擦"比喻动人，橘子作为情感载体巧妙以小见大。从视觉到记忆到味觉，层次分明。', tags:['比喻','对比'] },
+  { id:4, date:'2026-07-18', score:70, title:'慢生活', skill:'排比', prompt:'谈谈你对"慢生活"的理解……', content:'慢生活就是不要那么着急。现在大家都很忙，吃饭点外卖，走路看手机。但慢下来更好。慢慢吃饭能尝味道，慢慢走路能看风景，慢慢聊天能交真朋友。我周末喜欢去公园坐着什么都不干，就看看树和鸟，感觉很放松。心情好。', fb:'排比结构清晰但偏口语化。建议引入具体人物故事（如木心《从前慢》）支撑观点，用词更精炼。', tags:['排比'] },
+  { id:5, date:'2026-07-15', score:84, title:'深夜书房', skill:'拟人', prompt:'描写深夜写作/读书的场景……', content:'台灯把桌面照成一方暖黄岛屿，四周是暗夜的海洋。书页翻动的声音在寂静中格外清晰，像秋叶落地。杯中茶凉了，茶叶像加完班终于休息的小人儿。窗外虫鸣更显得夜的深沉。这一刻世界只剩我和纸上文字，彼此对望，心照不宣。', fb:'"暖黄岛屿"比喻精彩，茶叶拟人化有巧思。氛围营造一流。', tags:['拟人','比喻'] },
+  { id:6, date:'2026-07-12', score:90, title:'夏天的记忆', skill:'感官', prompt:'写一段关于"夏天"的记忆……', content:'外婆家的夏天从蝉鸣开始。天没亮透蝉就急不可耐地扯开嗓子，一声接一声把整个村庄叫醒。厨房飘出绿豆汤的甜香混着灶台蒲扇搅动的热风。我光脚跑过晒得发烫的石板路，脚底灼热一路窜到头顶，然后"扑通"跳进河里——那一刻，整个夏天都凉了。', fb:'听觉→嗅觉→触觉→温度，感官线索清晰递进。最后"整个夏天都凉了"收束有力。', tags:['感官','细节'] },
+];
+
+/* ============ 页面切换 ============ */
+function go(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('p-'+name).classList.add('active');
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.p === name));
+  if (name==='practice') loadPrompt();
+  if (name==='history') renderHist();
+  if (name==='skills') { renderSkillTabs(); renderSkill('metaphor'); }
+  if (name==='examples') { renderExFilter(); renderEx('all'); }
+  if (name==='home') { renderHomeTip(); renderHomeEx(); }
+  window.scrollTo(0,0);
+}
+
+/* ============ 首页 ============ */
+function renderHomeTip() {
+  const today = new Date().getDate();
+  const s = SKILLS[today % SKILLS.length];
+  document.getElementById('homeTip').innerHTML = `
+    <span class="tip-tag">📌 今日推荐</span>
+    <h4>${s.name}：${s.sub}</h4>
+    <p>${s.desc.slice(0,70)}…</p>
+    <div class="tip-cta">
+      <button class="btn-primary" onclick="go('skills')">📖 学技巧</button>
+      <button class="btn-outline" onclick="go('practice')">✏️ 练习</button>
+    </div>`;
+}
+function renderHomeEx() {
+  // 随机3条
+  const picks = [...ALL_EX].sort(()=>Math.random()-.5).slice(0,3);
+  document.getElementById('homeEx').innerHTML = picks.map(ex => `
+    <div class="ex-card" onclick="go('examples')">
+      <span class="ex-meta">${ex.skillName} · ${ex.label}</span>
+      <div class="ex-text">"${ex.text}"</div>
+      <div class="ex-src">—— ${ex.src}</div>
+    </div>`).join('');
+}
+
+/* ============ 技巧页 ============ */
+let curSkill = 'metaphor';
+function renderSkillTabs() {
+  document.getElementById('skillTabs').innerHTML = SKILLS.map(s => `
+    <span class="skill-tab ${s.id===curSkill?'active':''}" onclick="renderSkill('${s.id}',this)">${s.icon} ${s.name}</span>
+  `).join('');
+}
+function renderSkill(id, el) {
+  curSkill = id;
+  document.querySelectorAll('.skill-tab').forEach(t => t.classList.remove('active'));
+  if (el) el.classList.add('active');
+  else document.querySelectorAll('.skill-tab').forEach(t => { if(t.textContent.includes(SKILLS.find(s=>s.id===id).name)) t.classList.add('active'); });
+  const s = SKILLS.find(x => x.id === id);
+
+  // 随机展示5条例句
+  const exs = [...s.examples].sort(()=>Math.random()-.5).slice(0,5);
+
+  document.getElementById('skillPage').innerHTML = `
+    <div class="skill-header">
+      <div class="sh-icon" style="background:${s.bg};color:${s.color};">${s.icon}</div>
+      <h2>${s.name}</h2>
+      <div class="sh-sub">${s.sub}</div>
+      <div class="sh-desc">${s.desc}</div>
+    </div>
+    <div class="section-h" style="padding:14px 0 6px;"><h3>💎 经典例句（随机）</h3><a onclick="renderSkill('${id}')">🔀 换一批</a></div>
+    ${exs.map((ex,i) => `
+      <div class="example-block">
+        <div class="eb-label">📖 ${ex.label}</div>
+        <div class="eb-text">"${ex.text}"</div>
+        <div class="eb-src">—— ${ex.src}</div>
+        <div class="eb-analysis"><strong>赏析：</strong>${ex.an}</div>
+        <div class="eb-actions">
+          <button class="btn-mini" id="lk-${id}-${i}" onclick="toggleLk('lk-${id}-${i}')">🤍 收藏</button>
+          <button class="btn-mini" onclick="copyT('${ex.text.replace(/'/g,"\\'")}')">📋 复制</button>
+          <button class="btn-mini" onclick="jumpPractice('${id}')">✏️ 练习</button>
+        </div>
+      </div>`).join('')}
+    <div class="practice-box">
+      <div class="pb-label">💡 练习建议</div>
+      <div class="pb-text">${s.tip}</div>
+    </div>
+    <div class="prompt-box" style="margin-top:12px;">
+      <span class="pb-tag">今日命题</span>
+      <div class="pb-text">${s.practice}</div>
+    </div>
+    <button class="btn-primary" style="width:100%;margin-top:10px;" onclick="jumpPractice('${id}')">✏️ 开始练习「${s.name}」</button>
+  `;
+}
+
+function jumpPractice(skillId) {
+  go('practice');
+  setTimeout(() => {
+    const p = PROMPTS.find(x => x.skill === skillId) || PROMPTS[0];
+    loadPrompt(p);
+  }, 80);
+}
+
+/* ============ 例句库 ============ */
+let exF = 'all';
+function renderExFilter() {
+  const cats = [{v:'all',n:'全部'},...SKILLS.map(s => ({v:s.id,n:s.name}))];
+  document.getElementById('exFilter').innerHTML = cats.map(c => `
+    <span class="ex-chip ${c.v===exF?'active':''}" onclick="renderEx('${c.v}',this)">${c.n}</span>
+  `).join('');
+}
+function renderEx(f, el) {
+  exF = f;
+  document.querySelectorAll('.ex-chip').forEach(c => c.classList.remove('active'));
+  if (el) el.classList.add('active');
+  else document.querySelectorAll('.ex-chip').forEach(c => { const map={all:'全部',metaphor:'比喻',person:'拟人',parallel:'排比',sensory:'感官',detail:'细节',contrast:'对比'}; if(c.textContent===map[f]) c.classList.add('active'); });
+
+  const list = f==='all' ? ALL_EX : ALL_EX.filter(e => e.skill===f);
+  const shuffled = [...list].sort(()=>Math.random()-.5);
+  const tagClass = {metaphor:'tag-metaphor',person:'tag-person',parallel:'tag-parallel',sensory:'tag-sensory',detail:'tag-detail',contrast:'tag-contrast'};
+
+  document.getElementById('exList').innerHTML = shuffled.map((ex,i) => `
+    <div class="ex-full">
+      <div class="ef-top">
+        <span class="ef-tag ${tagClass[ex.skill]}">${ex.skillName} · ${ex.label}</span>
+        <span style="font-size:10px;color:var(--gray2);">#${i+1}</span>
+      </div>
+      <div class="ef-quote">"${ex.text}"</div>
+      <div class="ef-src">—— ${ex.src}</div>
+      <div class="ef-an"><strong>赏析：</strong>${ex.an}</div>
+      <div class="ef-acts">
+        <button class="btn-mini" id="el-${f}-${i}" onclick="toggleLk('el-${f}-${i}')">🤍 收藏</button>
+        <button class="btn-mini" onclick="copyT('${ex.text.replace(/'/g,"\\'")}')">📋 复制</button>
+        <button class="btn-mini" onclick="jumpPractice('${ex.skill}')">✏️ 练此技巧</button>
+        <button class="btn-mini" onclick="renderEx('${f}')">🔀 换一批</button>
+      </div>
+    </div>`).join('');
+}
+
+/* ============ 练习页 ============ */
+let curPrompt = null;
+function loadPrompt(p) {
+  if (!p) p = PROMPTS[Math.floor(Math.random()*PROMPTS.length)];
+  curPrompt = p;
+  document.getElementById('prTag').textContent = '🎯 '+p.tag;
+  document.getElementById('prTitle').textContent = p.title;
+  document.getElementById('pbTag').textContent = p.tag;
+  document.getElementById('pbText').textContent = p.text;
+  document.getElementById('pbHint').textContent = p.hint;
+  const skill = SKILLS.find(s => s.id === p.skill);
+  document.getElementById('skillRem').textContent = '💡 重点：'+skill.name;
+  document.getElementById('linkedBar').innerHTML = `
+    <div class="lb-ic">${skill.icon}</div>
+    <div class="lb-text"><b>关联技巧：${skill.name}</b><small>${skill.sub}</small></div>
+    <button class="btn-mini" onclick="go('skills')">查看 →</button>`;
+  document.getElementById('editor').value = '';
+  document.getElementById('wc').textContent = '0';
+}
+
+document.getElementById('editor').addEventListener('input', () => {
+  document.getElementById('wc').textContent = document.getElementById('editor').value.length;
+});
+
+function submitWrite() {
+  const t = document.getElementById('editor').value.trim();
+  if (!t) return showToast('⚠️ 先写点什么');
+  if (t.length < 30) return showToast('⚠️ 至少30字');
+
+  const skill = SKILLS.find(s => s.id === (curPrompt?.skill || 'metaphor'));
+  const base = 58 + Math.floor(Math.random()*22);
+  const lenB = t.length > 150 ? 8 : t.length > 100 ? 4 : 0;
+
+  // 检测技巧
+  let detected = false;
+  if (skill.id==='metaphor') detected = /像|如|似|仿佛|宛若|如同|是|成为|比作/.test(t);
+  else if (skill.id==='person') detected = /悄悄|偷偷|默默|轻轻|探|望|笑|哭|叹|凝视|拥抱|皱|撇/.test(t);
+  else if (skill.id==='parallel') detected = (t.match(/[，。！？]/g)||[]).length > 5 && /。.{5,20}。.{5,20}。/.test(t);
+  else if (skill.id==='sensory') detected = /闻|听|摸|触|尝|看|嗅|气味|声音|触感|凉|热|香|甜|苦|酸/.test(t);
+  else if (skill.id==='detail') detected = /手指|嘴角|眉头|眼神|颤抖|攥|捏|摩挲|袖口|指甲|背影|脚印/.test(t);
+  else if (skill.id==='contrast') detected = /但|却|然而|虽然|曾经|以前|如今|不再|过去|现在|那时|这时/.test(t);
+
+  const score = Math.min(98, base + lenB + (detected?10:0));
+
+  const fbGood = detected
+    ? `「${skill.name}」运用得当，效果出色。${t.length>150?'篇幅充实。':''}`
+    : `语句通顺${t.length>120?'，内容较充实':''}。`;
+  const fbWarn = detected
+    ? (t.length<150?'可展开细节让画面更有层次。':'结尾可加一句留白或升华。')
+    : `本篇重点要求运用「${skill.name}」，未能明显体现。回顾技巧说明再试一次。`;
+  const fbSkill = detected
+    ? `「${skill.name}」运用准确。可尝试更高阶用法。`
+    : `「${skill.name}」未检出。${skill.tip.slice(0,55)}…`;
+  const fbAll = score>=85?'优秀！技巧运用娴熟。':score>=75?'良好，有进步空间。':'还需努力，建议先复习技巧再动笔。';
+
+  document.getElementById('scNum').textContent = score;
+  document.getElementById('fbGood').textContent = fbGood;
+  document.getElementById('fbWarn').textContent = fbWarn;
+  document.getElementById('fbSkill').textContent = fbSkill;
+  document.getElementById('fbAll').textContent = fbAll;
+  document.getElementById('scRing').setAttribute('stroke-dashoffset', 238.8 - (score/100)*238.8);
+
+  HISTORY.unshift({ id:Date.now(), date:new Date().toISOString().slice(0,10), score, title:curPrompt?.title||'练习', skill:skill.name, prompt:curPrompt?.text||'', content:t, fb:fbGood+' '+fbWarn, tags:detected?[skill.name]:['待改进'] });
+  document.getElementById('rsOverlay').classList.add('show');
+}
+function closeRs() { document.getElementById('rsOverlay').classList.remove('show'); }
+
+/* ============ 历史 ============ */
+let hf = 'all';
+function renderHist() {
+  let list = HISTORY;
+  if (hf==='week') list = HISTORY.slice(0,4);
+  else if (hf==='high') list = HISTORY.filter(h => h.score>=85);
+  const colors = {比喻:'#E6F7FF',拟人:'#F6FFED',排比:'#FFF7E6',感官:'#F9F0FF',细节:'#FFF2F0',对比:'#E6FFFB','待改进':'#F5F5F5'};
+  document.getElementById('hList').innerHTML = list.map(h => `
+    <div class="h-item" onclick="showHd(${h.id})">
+      <div class="h-top"><span class="h-date">${h.date}</span><span class="h-score ${h.score>=85?'h':h.score>=75?'m':'l'}">${h.score}分</span></div>
+      <div class="h-title">${h.title}</div>
+      <div class="h-prev">${h.content}</div>
+      <div class="h-tags">${h.tags.map(t => `<span class="h-tag" style="background:${colors[t]||'#f5f5f5'};color:#333;">${t}</span>`).join('')}</div>
+    </div>`).join('');
+}
+function fHist(type, el) {
+  hf = type;
+  document.querySelectorAll('.ex-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderHist();
+}
+function showHd(id) {
+  const h = HISTORY.find(x => x.id===id);
+  if (!h) return;
+  document.getElementById('hdT').textContent = h.title;
+  document.getElementById('hdM').textContent = `${h.date} · ${h.score}分 · ${h.skill}`;
+  document.getElementById('hdP').textContent = h.prompt;
+  document.getElementById('hdC').textContent = h.content;
+  document.getElementById('hdF').textContent = h.fb;
+  document.getElementById('hdOverlay').classList.add('show');
+}
+function closeHd() { document.getElementById('hdOverlay').classList.remove('show'); }
+
+/* ============ 工具 ============ */
+function toggleLk(id) {
+  const b = document.getElementById(id);
+  if (!b) return;
+  if (b.textContent.includes('🤍')) { b.textContent='❤️ 已收藏'; b.classList.add('active'); showToast('⭐ 已收藏'); }
+  else { b.textContent='🤍 收藏'; b.classList.remove('active'); }
+}
+function copyT(t) {
+  if (navigator.clipboard) navigator.clipboard.writeText(t).then(()=>showToast('📋 已复制'));
+  else showToast('📋 已复制');
+}
+let tt;
+function showToast(m) {
+  const t = document.getElementById('toast');
+  t.textContent = m; t.classList.add('show');
+  clearTimeout(tt); tt = setTimeout(()=>t.classList.remove('show'),1600);
+}
+
+/* ============ 初始化 ============ */
+renderHomeTip(); renderHomeEx();
+renderSkillTabs(); renderSkill('metaphor');
+renderExFilter(); renderEx('all');
+renderHist(); loadPrompt();
+</script>
+</body>
+</html>
