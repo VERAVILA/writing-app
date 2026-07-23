@@ -60,6 +60,15 @@ body {
   border-radius: 10px;
   font-size: 11px;
 }
+.header .desc-block {
+  margin-top: 8px;
+  background: rgba(0,0,0,.12);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+.header .desc-block b { font-size: 13px; }
 
 /* 例句区 */
 .section {
@@ -272,6 +281,207 @@ body {
 }
 .toast.show { opacity: 1; transform: translate(-50%,-50%) scale(1); }
 
+/* 统计面板 */
+.stats-panel {
+  background: linear-gradient(135deg, #FF8C42, #FF6B6B);
+  border-radius: 16px;
+  padding: 18px 20px;
+  color: #fff;
+  margin-bottom: 14px;
+  box-shadow: 0 4px 20px rgba(255,107,107,.25);
+}
+.stats-panel .stats-title {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.stat-item {
+  text-align: center;
+  background: rgba(255,255,255,.18);
+  border-radius: 10px;
+  padding: 10px 6px;
+}
+.stat-item .num {
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+.stat-item .label {
+  font-size: 10px;
+  opacity: .85;
+  margin-top: 2px;
+}
+.praise-text {
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.7;
+  background: rgba(255,255,255,.15);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 4px;
+}
+
+/* 日历 */
+.calendar-panel {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 1px 8px rgba(0,0,0,.04);
+}
+.calendar-panel .cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.calendar-panel .cal-header .cal-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+.calendar-panel .cal-header button {
+  background: var(--orange-pale);
+  color: var(--orange);
+  border: none;
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 13px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.calendar-panel .cal-header button:active { opacity: .6; }
+.cal-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  margin-bottom: 4px;
+}
+.cal-weekdays span {
+  text-align: center;
+  font-size: 10px;
+  color: var(--sub);
+  font-weight: 600;
+  padding: 2px 0;
+}
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+.cal-day {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  position: relative;
+  transition: background .15s;
+  padding: 2px 0;
+}
+.cal-day.empty { cursor: default; }
+.cal-day .day-num { font-weight: 600; line-height: 1.2; }
+.cal-day .day-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  margin-top: 1px;
+}
+.cal-day.active-day {
+  background: var(--orange);
+  color: #fff;
+}
+.cal-day.active-day .day-dot { background: #fff; }
+.cal-day.has-writing {
+  background: var(--orange-pale);
+  color: var(--orange);
+}
+.cal-day.today {
+  border: 1.5px solid var(--orange);
+}
+.cal-day:not(.empty):not(.active-day):hover {
+  background: #f0f0f0;
+}
+
+/* 日期详情弹窗 */
+.date-detail-list { margin-top: 8px; }
+.date-detail-item {
+  background: #FAFAF8;
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+}
+.date-detail-item .dd-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+.date-detail-item .dd-tag {
+  background: var(--orange-pale);
+  color: var(--orange);
+  padding: 1px 7px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.date-detail-item .dd-score {
+  margin-left: auto;
+  background: var(--orange);
+  color: #fff;
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.date-detail-item .dd-text {
+  font-size: 13px;
+  color: #444;
+  line-height: 1.6;
+}
+.date-detail-item .dd-chars {
+  font-size: 11px;
+  color: var(--sub);
+  margin-top: 3px;
+}
+
+/* 导出按钮 */
+.export-btn {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 10px;
+  border: 1.5px dashed var(--border);
+  background: transparent;
+  color: var(--sub);
+  font-size: 13px;
+  cursor: pointer;
+  text-align: center;
+}
+.export-btn:active { opacity: .6; }
+
+/* 空状态提示 */
+.empty-hint {
+  text-align: center;
+  padding: 16px 12px;
+  color: rgba(255,255,255,.7);
+  font-size: 12.5px;
+  line-height: 1.8;
+}
+.empty-hint .emoji { font-size: 28px; margin-bottom: 6px; display: block; }
+
 /* 加载中 */
 .loading {
   text-align: center;
@@ -283,13 +493,17 @@ body {
 </head>
 <body>
 
+<!-- 顶部技巧卡片 -->
 <div class="header">
   <div class="label" id="skillCat">加载中...</div>
   <h1 id="skillName">--</h1>
-  <div class="desc" id="skillDesc"></div>
+  <div class="desc-block" id="skillDescBlock">
+    <b>技巧解释：</b><span id="skillDesc">--</span>
+  </div>
   <div class="cat" id="skillNo"></div>
 </div>
 
+<!-- 例句区 -->
 <div class="section" id="exampleSection">
   <div class="title">
     <div class="title-left"><span class="dot"></span> 例句参考</div>
@@ -303,13 +517,69 @@ body {
   </div>
 </div>
 
+<!-- 写作区 -->
 <div class="section">
-  <div class="title"><div class="title-left"><span class="dot"></span> 你来写一个</div></div>
+  <div class="title">
+    <div class="title-left"><span class="dot"></span> 你来写一个</div>
+    <div class="mini-btns">
+      <button class="mini-btn alt" id="btnCopy" onclick="copyText()" title="复制当前内容">📋复制</button>
+      <button class="mini-btn alt" id="btnClear" onclick="clearText()" title="清空输入框">🗑清空</button>
+    </div>
+  </div>
   <textarea class="write-area" id="writeArea" placeholder="不限字数，用这个技巧写一个句子吧……&#10;&#10;写完后点击「提交」"></textarea>
   <div class="char-count" id="charCount">0 字</div>
   <button class="btn-submit" id="submitBtn" onclick="submitPractice()">提交练习</button>
 </div>
 
+<!-- 统计面板（始终存在，有数据时显示数据，无数据时显示引导） -->
+<div class="stats-panel" id="statsPanel">
+  <div class="stats-title">📊 我的写作数据</div>
+  <div class="stats-grid" id="statsGrid">
+    <div class="stat-item">
+      <div class="num" id="statDays">0</div>
+      <div class="label">活跃天数</div>
+    </div>
+    <div class="stat-item">
+      <div class="num" id="statCount">0</div>
+      <div class="label">练习次数</div>
+    </div>
+    <div class="stat-item">
+      <div class="num" id="statChars">0</div>
+      <div class="label">累计字数</div>
+    </div>
+  </div>
+  <div class="praise-text" id="praiseText">开始你的第一次写作吧 ✨</div>
+  <div class="empty-hint" id="statsHint" style="display:none">
+    <span class="emoji">📝</span>
+    提交第一次练习后<br>
+    这里会显示你的活跃天数、练习次数、累计字数<br>
+    还有连续写作记录和表扬语 🔥
+  </div>
+  <div style="font-size:11px;opacity:.7;margin-top:6px;text-align:center" id="statExtra"></div>
+</div>
+
+<!-- 日历（始终存在，有数据时显示日期高亮，无数据时显示当月空白日历） -->
+<div class="calendar-panel" id="calendarPanel">
+  <div class="cal-header">
+    <button onclick="changeMonth(-1)">◀</button>
+    <span class="cal-title" id="calTitle"></span>
+    <button onclick="changeMonth(1)">▶</button>
+  </div>
+  <div class="cal-weekdays">
+    <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
+  </div>
+  <div class="cal-grid" id="calGrid"></div>
+  <div style="display:flex;gap:12px;margin-top:8px;font-size:11px;color:var(--sub);justify-content:center">
+    <span><span style="display:inline-block;width:8px;height:8px;background:var(--orange-pale);border-radius:50%;margin-right:3px;vertical-align:middle"></span>有练习</span>
+    <span><span style="display:inline-block;width:8px;height:8px;background:var(--orange);border-radius:50%;margin-right:3px;vertical-align:middle"></span>选中</span>
+    <span><span style="display:inline-block;width:8px;height:8px;border:1.5px solid var(--orange);border-radius:50%;margin-right:3px;vertical-align:middle"></span>今天</span>
+  </div>
+  <div class="empty-hint" id="calHint" style="display:none;color:var(--sub);margin-top:8px">
+    写了练习的日子会在这里高亮显示，点击可查看当天写了什么 📅
+  </div>
+</div>
+
+<!-- 历史记录 -->
 <div class="history-header" id="historyHeader">
   <h3>📋 练习记录</h3>
   <button class="clear" onclick="clearHistory()">清空</button>
@@ -339,18 +609,94 @@ body {
       <ul><li id="fbOverall"></li></ul>
     </div>
     <button class="btn-submit" style="margin-top:8px" onclick="closeModal()">我知道了</button>
+    <button class="export-btn" onclick="exportRecords()">📥 导出所有记录（JSON备份）</button>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
+/* ========== 68种技巧描述库（内置，不依赖外部数据） ========== */
+const SKILL_DESCS = {
+  '比喻':'用熟悉的事物描绘陌生的事物，分明喻/暗喻/借喻/博喻',
+  '拟人':'赋予非人事物人的情感、动作、思想',
+  '排比':'三个以上结构相似的句子排列，增强气势',
+  '夸张':'故意扩大或缩小事物的特征，制造冲击力',
+  '对比':'把对立事物并列，突出差异',
+  '对偶':'结构相同、字数相等的两句成对排列',
+  '反复':'重复使用同一词语或句子，强调情感',
+  '反问':'用疑问形式表达确定意思，答案在问中',
+  '设问':'自问自答，引起注意',
+  '借代':'借用相关事物代替本体',
+  '双关':'一词多义，表面说此实际指彼',
+  '通感':'打通五官感受，用一种感官写另一种',
+  '象征':'用具体形象表现抽象概念',
+  '用典':'引用历史故事或前人诗句',
+  '互文':'前后词语互相呼应、互相补充',
+  '顶真':'上句结尾作下句开头，环环相扣',
+  '回环':'前后语句循环往复',
+  '拈连':'把适用于甲的词顺势用于乙',
+  '移就':'把修饰甲的词移用来修饰乙',
+  '层递':'层层递进，由浅入深',
+  '比拟':'把人当物写或把物当人写',
+  '摹状':'摹写事物的声音、颜色、形状',
+  '呼告':'直接呼唤文中的人或物',
+  '婉曲':'用委婉曲折的方式表达本意',
+  '引用':'引用名言、诗句、典故增强说服力',
+  '感官描写':'调动五感（视听嗅触味），让读者身临其境',
+  '细节描写':'聚焦微小传神的细节，以小见大',
+  '动作描写':'精准刻画人物动作，推动情节',
+  '神态描写':'捕捉面部表情变化，揭示内心',
+  '心理描写':'深入人物内心世界',
+  '语言描写':'通过对话展现人物性格',
+  '外貌描写':'刻画人物外在特征',
+  '环境描写':'渲染氛围，烘托情感',
+  '场面描写':'整体场景的铺陈与把控',
+  '白描':'不加修饰，朴素勾勒',
+  '工笔':'细致入微的精雕细刻',
+  '侧面描写':'通过他人他物间接表现主体',
+  '顺叙':'按时间顺序叙述',
+  '倒叙':'先写结果再回溯原因',
+  '插叙':'在主线中插入回忆或补充',
+  '补叙':'事后补充说明',
+  '分叙':'多条线索并行叙述',
+  '第一人称':'以"我"的视角讲述',
+  '第三人称':'以旁观者视角讲述',
+  '多视角':'不同人物交替叙述',
+  '伏笔':'前文埋下暗示后文的情节',
+  '悬念':'制造疑问吸引读者追读',
+  '总分总':'开头总起—分述—结尾总结',
+  '递进式':'层层深入，逐步推进',
+  '并列式':'几个板块平行展开',
+  '对照式':'正反对照，相互映衬',
+  '起承转合':'开端—发展—转折—收束',
+  '开门见山':'开篇直接点明主题',
+  '卒章显志':'结尾处揭示主旨',
+  '首尾呼应':'开头结尾形成闭环',
+  '直抒胸臆':'直接抒发内心情感',
+  '借景抒情':'通过景物表达情感',
+  '托物言志':'借助事物表达志向',
+  '寓情于事':'在叙事中蕴含情感',
+  '寓情于理':'在议论中渗透情感',
+  '以景结情':'以景物描写结束，余韵悠长',
+  '动词锤炼':'选用精准有力的动词',
+  '形容词活用':'打破常规使用形容词',
+  '叠词':'重复音节增强韵律',
+  '长短句交错':'长句舒缓短句急促，节奏变化',
+  '整散结合':'整齐句与散句搭配使用',
+  '文白交融':'典雅与通俗有机结合',
+  '口语化表达':'贴近生活的自然语言',
+  '节奏控制':'通过标点和断句控制阅读节奏',
+};
+
 /* ========== 全局状态 ========== */
-let SKILLS = [];       // 从 examples.json 构建
+let SKILLS = [];       // 技巧列表（从 examples.json 构建 + 内置描述补充）
 let ALL_EX = [];        // 全部例句（扁平化）
 let currentSkill = null;
 let currentExample = null;
-let history = JSON.parse(localStorage.getItem('writing_history_v3') || '[]');
+let history = [];
+try { history = JSON.parse(localStorage.getItem('writing_history_v4') || '[]'); }
+catch(e) { history = []; }
 
 /* ========== 加载 examples.json ========== */
 async function loadData() {
@@ -360,26 +706,35 @@ async function loadData() {
     const data = await res.json();
     ALL_EX = data;
 
-    // 从例句构建技巧列表（按 technique 字段分组）
+    // 从例句构建技巧列表（适配短字段名 t/c/s/a/w/n）
     const skillMap = new Map();
-    data.forEach((ex, idx) => {
-      const key = ex.technique || '未分类';
+    data.forEach((ex) => {
+      const key = ex.t || ex.technique || '未分类';
+      const cat = ex.c || ex.category || '修辞手法';
+      const sentence = ex.s || ex.sentence || '';
+      const author = ex.a || ex.author || '';
+      const work = ex.w || ex.work || '';
+      const analysis = ex.n || ex.analysis || '';
       if (!skillMap.has(key)) {
         skillMap.set(key, {
           name: key,
-          cat: ex.category || '写作技巧',
-          desc: ex.explanation || '',
+          cat: cat,
+          desc: SKILL_DESCS[key] || '通过练习体会这个技巧的妙处',
           examples: []
         });
       }
       skillMap.get(key).examples.push({
-        text: ex.sentence,
-        src: (ex.author ? ex.author : '') + (ex.work ? '《' + ex.work + '》' : ''),
-        an: ex.analysis || ''
+        text: sentence,
+        src: (author ? author : '') + (work ? '《' + work + '》' : ''),
+        an: analysis
       });
     });
 
     SKILLS = Array.from(skillMap.values());
+
+    // 按分类排序：修辞手法 → 描写技法 → 叙事技法 → 结构布局 → 抒情技法 → 炼字造句
+    const catOrder = {'修辞手法':1,'描写技法':2,'叙事技法':3,'结构布局':4,'抒情技法':5,'炼字造句':6};
+    SKILLS.sort((a,b) => (catOrder[a.cat]||9) - (catOrder[b.cat]||9));
 
     // 随机起始
     currentSkill = SKILLS[Math.floor(Math.random() * SKILLS.length)];
@@ -388,11 +743,14 @@ async function loadData() {
     renderSkill();
     renderExample();
     renderHistory();
+    renderStats();
     showToast('例句库已加载：' + ALL_EX.length + ' 条 ✨');
   } catch (e) {
     console.error('加载失败:', e);
     document.getElementById('exampleBody').innerHTML =
       '<div class="loading">⚠️ 例句加载失败<br><br>请确认 examples.json 存在<br>或检查网络连接</div>';
+    // 即使加载失败，也渲染统计（可能本地有历史记录）
+    renderStats();
   }
 }
 
@@ -422,7 +780,6 @@ function pickRandomExample() {
   if (!currentSkill || currentSkill.examples.length === 0) return;
   const exs = currentSkill.examples;
   let pick = exs[Math.floor(Math.random() * exs.length)];
-  // 确保不重复上一条
   let attempts = 0;
   while (pick === currentExample && exs.length > 1 && attempts < 5) {
     pick = exs[Math.floor(Math.random() * exs.length)];
@@ -463,6 +820,43 @@ function updateCharCount() {
 }
 document.getElementById('writeArea').addEventListener('input', updateCharCount);
 
+/* ========== 一键复制 ========== */
+function copyText() {
+  const ta = document.getElementById('writeArea');
+  const text = ta.value.trim();
+  if (!text) { showToast('输入框是空的，没东西可复制 🤔'); return; }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      showToast('已复制 ' + text.replace(/\s/g,'').length + ' 字到剪贴板 ✅');
+    }, () => fallbackCopy(text));
+  } else {
+    fallbackCopy(text);
+  }
+}
+function fallbackCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.left = '-9999px';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); showToast('已复制 ✅'); }
+  catch(e) { showToast('复制失败，请手动长按选择'); }
+  document.body.removeChild(ta);
+}
+
+/* ========== 一键清空 ========== */
+function clearText() {
+  const ta = document.getElementById('writeArea');
+  if (!ta.value.trim()) { showToast('已经是空的了'); return; }
+  if (confirm('确定清空输入框？')) {
+    ta.value = '';
+    updateCharCount();
+    ta.focus();
+    showToast('已清空 ✨');
+  }
+}
+
 /* ========== 提交练习 + AI批改 ========== */
 function submitPractice() {
   const text = document.getElementById('writeArea').value.trim();
@@ -477,21 +871,25 @@ function submitPractice() {
     btn.textContent = '提交练习';
     btn.disabled = false;
 
+    const now = new Date();
     const record = {
       id: Date.now().toString(36),
-      date: new Date().toLocaleDateString('zh-CN', {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'}),
+      date: now.toLocaleDateString('zh-CN', {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'}),
+      dateKey: now.toISOString().slice(0,10),
       skillName: currentSkill.name,
       skillCat: currentSkill.cat,
       example: currentExample ? currentExample.text : '',
       text: text,
+      charCount: text.replace(/\s/g,'').length,
       score: result.score,
       feedback: result,
     };
     history.push(record);
-    localStorage.setItem('writing_history_v3', JSON.stringify(history));
+    localStorage.setItem('writing_history_v4', JSON.stringify(history));
 
     showResult(result);
     renderHistory();
+    renderStats();
   }, 600);
 }
 
@@ -500,7 +898,6 @@ function review(text, skill) {
   const wordCount = text.replace(/\s/g, '').length;
   const sentences = text.split(/[。！？\n]/).filter(s => s.trim().length > 3);
 
-  // 检测特征
   const metaphorWords = ['像','好像','如同','仿佛','是','变成','化作','犹如','宛如','似的','一样','一般','如','似','成为','变为'];
   const foundMetaphors = metaphorWords.filter(w => text.includes(w));
 
@@ -525,7 +922,6 @@ function review(text, skill) {
   const contrastWords = ['但','却','然而','不过','可是','虽然','但是','相反','而'];
   const foundContrast = contrastWords.filter(w => text.includes(w));
 
-  // 评分
   let score = 50;
   score += Math.min(wordCount * 0.3, 25);
 
@@ -570,7 +966,6 @@ function review(text, skill) {
   if (reduplications.length > 0) score += 5;
   score = Math.min(Math.round(score), 100);
 
-  // 亮点
   const highlights = [];
   if (foundMetaphors.length > 0) highlights.push(`使用了比喻词"${foundMetaphors.slice(0,3).join('、')}"`);
   if (parallelCount > 0) highlights.push(`${parallelCount}处排比结构，节奏感好`);
@@ -580,14 +975,12 @@ function review(text, skill) {
   if (wordCount > 80) highlights.push(`篇幅充实（${wordCount}字），有展开意识`);
   if (highlights.length === 0) highlights.push('完成了写作练习，这是最重要的一步 👏');
 
-  // 改进
   const improvements = [];
   if (!skillUsed) improvements.push(`重点练习"${skill.name}"：${skillComment}`);
   if (wordCount < 20) improvements.push('字数偏少，多展开一些细节');
   if (foundSensory.length < 2 && !sname.includes('排比') && !sname.includes('夸张')) improvements.push('尝试加入感官描写（看到/听到/闻到什么）');
   if (improvements.length === 0) improvements.push('整体不错，下次可尝试混合多种技巧');
 
-  // 总评
   let overall = '';
   if (score >= 90) overall = '非常出色！技巧运用成熟自然，可以多尝试混合多种技巧写作。';
   else if (score >= 80) overall = '写得很好，核心技巧到位。注意每次让句子比上次更深一层。';
@@ -651,8 +1044,9 @@ function showHistoryDetail(id) {
 function clearHistory() {
   if (confirm('确定清空所有练习记录？')) {
     history = [];
-    localStorage.removeItem('writing_history_v3');
+    localStorage.removeItem('writing_history_v4');
     renderHistory();
+    renderStats();
     showToast('已清空');
   }
 }
@@ -665,6 +1059,198 @@ function showToast(msg) {
   t.classList.add('show');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+/* ========== 日期格式化工具 ========== */
+function dateKeyToStr(key) {
+  const [y,m,d] = key.split('-');
+  return `${parseInt(m)}月${parseInt(d)}日`;
+}
+function getTodayKey() {
+  return new Date().toISOString().slice(0,10);
+}
+
+/* ========== 统计面板（始终渲染，无数据时显示引导） ========== */
+let calYear, calMonth, selectedDateKey;
+
+function renderStats() {
+  const hint = document.getElementById('statsHint');
+  if (history.length === 0) {
+    // 无数据：显示引导提示
+    hint.style.display = '';
+    document.getElementById('statDays').textContent = '0';
+    document.getElementById('statCount').textContent = '0';
+    document.getElementById('statChars').textContent = '0';
+    document.getElementById('praiseText').textContent = '开始你的第一次写作吧 ✨';
+    document.getElementById('statExtra').textContent = '';
+    renderCalendar(); // 仍然渲染空白日历
+    return;
+  }
+  hint.style.display = 'none';
+
+  const days = new Set(history.map(h => h.dateKey));
+  const totalChars = history.reduce((s,h) => s + (h.charCount || h.text.replace(/\s/g,'').length), 0);
+  const avgScore = Math.round(history.reduce((s,h) => s + h.score, 0) / history.length);
+  const avgChars = Math.round(totalChars / history.length);
+
+  document.getElementById('statDays').textContent = days.size;
+  document.getElementById('statCount').textContent = history.length;
+  document.getElementById('statChars').textContent = totalChars;
+
+  // 连续天数
+  const sortedDays = [...days].sort();
+  let streak = 1, maxStreak = 1;
+  for (let i = sortedDays.length - 1; i > 0; i--) {
+    const cur = new Date(sortedDays[i]);
+    const prev = new Date(sortedDays[i-1]);
+    const diff = Math.round((cur - prev) / 86400000);
+    if (diff === 1) { streak++; maxStreak = Math.max(maxStreak, streak); }
+    else { streak = 1; }
+  }
+  const todayKey = getTodayKey();
+  let todayActive = days.has(todayKey);
+  let currentStreak = todayActive ? streak : 0;
+
+  // 表扬语
+  const praiseEl = document.getElementById('praiseText');
+  let praise = '';
+  if (history.length === 1) {
+    praise = '🎉 迈出第一步！第一次写作已经完成，了不起！';
+  } else if (currentStreak >= 7) {
+    praise = `🔥 连续 ${currentStreak} 天写作！你已经是写作机器了，太可怕了！`;
+  } else if (currentStreak >= 3) {
+    praise = `💪 连续 ${currentStreak} 天没有断过，习惯正在养成！`;
+  } else if (totalChars >= 1000) {
+    praise = `📚 累计写了 ${totalChars} 字，这是一本小册子的量了！`;
+  } else if (avgScore >= 85) {
+    praise = `⭐ 平均分 ${avgScore} 分，你的水平已经相当不错了！`;
+  } else if (history.length >= 10) {
+    praise = `🏆 写了 ${history.length} 次练习，坚持本身就是胜利！`;
+  } else {
+    praise = '✨ 每一次练习都在让你变得更好，继续加油！';
+  }
+
+  praiseEl.textContent = praise;
+  document.getElementById('statExtra').textContent = `平均每次 ${avgChars} 字 · 平均得分 ${avgScore} 分 · 最长连续 ${maxStreak} 天`;
+
+  renderCalendar();
+}
+
+/* ========== 日历（始终渲染） ========== */
+function renderCalendar() {
+  const hint = document.getElementById('calHint');
+  if (history.length === 0) {
+    hint.style.display = '';
+  } else {
+    hint.style.display = 'none';
+  }
+
+  if (!calYear || !calMonth) {
+    const today = new Date();
+    calYear = today.getFullYear();
+    calMonth = today.getMonth();
+  }
+  if (!selectedDateKey) selectedDateKey = getTodayKey();
+
+  const titleEl = document.getElementById('calTitle');
+  const gridEl = document.getElementById('calGrid');
+  const monthNames = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+  titleEl.textContent = `${calYear}年 ${monthNames[calMonth]}`;
+
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
+
+  // 收集本月有练习的日期
+  const activeSet = new Set();
+  history.forEach(h => {
+    if (h.dateKey && h.dateKey.startsWith(`${calYear}-${String(calMonth+1).padStart(2,'0')}`)) {
+      activeSet.add(h.dateKey);
+    }
+  });
+
+  const todayKey = getTodayKey();
+  let html = '';
+
+  for (let i = 0; i < firstDay; i++) html += '<div class="cal-day empty"></div>';
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const key = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isActive = key === selectedDateKey;
+    const hasWriting = activeSet.has(key);
+    const isToday = key === todayKey;
+    let cls = 'cal-day';
+    if (isActive) cls += ' active-day';
+    else if (hasWriting) cls += ' has-writing';
+    if (isToday && !isActive) cls += ' today';
+    html += `<div class="${cls}" onclick="selectDate('${key}')">`;
+    html += `<span class="day-num">${d}</span>`;
+    if (hasWriting) html += `<span class="day-dot" style="background:${isActive?'#fff':'var(--orange)'}"></span>`;
+    html += '</div>';
+  }
+
+  const totalCells = firstDay + daysInMonth;
+  const remainder = totalCells % 7;
+  if (remainder > 0) {
+    for (let i = 0; i < 7 - remainder; i++) html += '<div class="cal-day empty"></div>';
+  }
+
+  gridEl.innerHTML = html;
+}
+
+function changeMonth(delta) {
+  calMonth += delta;
+  if (calMonth > 11) { calMonth = 0; calYear++; }
+  if (calMonth < 0) { calMonth = 11; calYear--; }
+  renderCalendar();
+}
+
+function selectDate(key) {
+  selectedDateKey = key;
+  renderCalendar();
+  const dayRecords = history.filter(h => h.dateKey === key);
+  if (dayRecords.length === 0) {
+    showToast(`${dateKeyToStr(key)} 没有练习记录`);
+    return;
+  }
+  const badge = document.getElementById('scoreBadge');
+  const totalChars = dayRecords.reduce((s,h) => s + (h.charCount || 0), 0);
+  const avgScore = Math.round(dayRecords.reduce((s,h) => s + h.score, 0) / dayRecords.length);
+  badge.textContent = avgScore;
+  const colors = avgScore>=90?['#34C759','#30D158']:avgScore>=80?['#FF8C42','#FFA940']:['#FFC53D','#FFD700'];
+  badge.style.background = `linear-gradient(135deg,${colors[0]},${colors[1]})`;
+
+  document.getElementById('resultTitle').textContent = `${dateKeyToStr(key)} 的练习`;
+  document.getElementById('resultSub').textContent = `${dayRecords.length} 条练习 · 共 ${totalChars} 字`;
+
+  const listEl = document.getElementById('fbHighlights');
+  listEl.innerHTML = dayRecords.map((h,i) => `
+    <li style="margin-bottom:6px">
+      <b>[${h.skillName}]</b> ${h.text.slice(0,100)}${h.text.length>100?'...':''}
+      <span style="color:var(--orange);font-weight:600"> (${h.score}分)</span>
+    </li>
+  `).join('');
+
+  document.getElementById('fbImprovements').innerHTML = '';
+  document.getElementById('fbSkill').innerHTML = '';
+  document.getElementById('fbOverall').textContent = `这天你完成了 ${dayRecords.length} 次练习，累计 ${totalChars} 字，平均 ${avgScore} 分。继续加油！`;
+  document.getElementById('modal').classList.add('show');
+}
+
+/* ========== 导出记录 ========== */
+function exportRecords() {
+  if (history.length === 0) { showToast('还没有练习记录可导出'); return; }
+  const data = JSON.stringify(history, null, 2);
+  const blob = new Blob([data], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const today = new Date().toISOString().slice(0,10);
+  a.href = url;
+  a.download = `墨练写作记录_${today}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast(`已导出 ${history.length} 条记录 ✅`);
 }
 
 /* ========== 启动 ========== */
